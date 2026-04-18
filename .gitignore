@@ -16,3 +16,8 @@ agents/deep/
 .novel-assistant/
 vector_memory.json*
 *.Zone.Identifier
+agents/*/sessions/
+agents/*/sessions
+*.jsonl
+*.jsonl.deleted
+*.jsonl.reset.*
