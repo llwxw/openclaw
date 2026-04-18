@@ -21,3 +21,4 @@ agents/*/sessions
 *.jsonl
 *.jsonl.deleted
 *.jsonl.reset.*
+*.reset.*
