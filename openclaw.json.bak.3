@@ -1,0 +1,293 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.4.15",
+    "lastTouchedAt": "2026-04-18T02:33:29.577Z"
+  },
+  "wizard": {
+    "lastRunAt": "2026-04-17T11:34:24.674Z",
+    "lastRunVersion": "2026.4.15",
+    "lastRunCommand": "onboard",
+    "lastRunMode": "local"
+  },
+  "logging": {
+    "level": "warn"
+  },
+  "auth": {
+    "profiles": {
+      "openai:default": {
+        "provider": "openai",
+        "mode": "api_key"
+      },
+      "deepseek:default": {
+        "provider": "deepseek",
+        "mode": "api_key"
+      },
+      "minimax:cn": {
+        "provider": "minimax",
+        "mode": "api_key"
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "ollama": {
+        "baseUrl": "http://172.23.96.1:11434",
+        "models": [
+          {
+            "id": "qwen2.5:14b",
+            "name": "qwen2.5:14b",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          }
+        ]
+      },
+      "deepseek": {
+        "baseUrl": "https://api.deepseek.com",
+        "apiKey": "sk-8e6102d12a394cd1822ee2503d54c137",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "deepseek-chat",
+            "name": "DeepSeek-V3",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "contextWindow": 65536,
+            "maxTokens": 8192
+          },
+          {
+            "id": "deepseek-reasoner",
+            "name": "DeepSeek-R1",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "contextWindow": 65536,
+            "maxTokens": 8192
+          }
+        ]
+      },
+      "codingplan": {
+        "baseUrl": "https://zhenze-huhehaote.cmecloud.cn/api/coding/v1",
+        "apiKey": "J99ouXWKXO8Zg5tLqv92YVsPNFhwuZc-z6z2ioeg7VE",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "minimax-m2.5",
+            "name": "minimax-m2.5 (Custom Provider)",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 204800,
+            "maxTokens": 4096
+          }
+        ]
+      },
+      "minimax": {
+        "baseUrl": "https://api.minimaxi.com/anthropic",
+        "models": [
+          {
+            "id": "MiniMax-M2.7",
+            "name": "MiniMax M2.7",
+            "reasoning": true,
+            "input": [
+              "text",
+              "image"
+            ],
+            "cost": {
+              "input": 0.3,
+              "output": 1.2,
+              "cacheRead": 0.06,
+              "cacheWrite": 0.375
+            },
+            "contextWindow": 204800,
+            "maxTokens": 131072
+          }
+        ],
+        "api": "anthropic-messages",
+        "authHeader": true
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "minimax/MiniMax-M2.7"
+      },
+      "models": {
+        "deepseek/deepseek-chat": {
+          "alias": "cloud"
+        },
+        "deepseek/deepseek-reasoner": {},
+        "ollama/qwen2.5:14b": {
+          "alias": "local"
+        },
+        "codingplan/minimax-m2.5": {
+          "alias": "coding"
+        },
+        "minimax/MiniMax-M2.7": {
+          "alias": "Minimax"
+        }
+      },
+      "workspace": "/home/ai/.openclaw/workspace",
+      "compaction": {
+        "mode": "safeguard"
+      }
+    }
+  },
+  "tools": {
+    "profile": "coding"
+  },
+  "bindings": [
+    {
+      "agentId": "main",
+      "match": {
+        "channel": "feishu",
+        "accountId": "default"
+      }
+    }
+  ],
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
+  "session": {
+    "dmScope": "per-channel-peer"
+  },
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "session-memory": {
+          "enabled": true
+        },
+        "command-logger": {
+          "enabled": true
+        },
+        "self-improvement": {
+          "enabled": true
+        },
+        "context_hook": {
+          "enabled": true
+        },
+        "auto-score-classify": {
+          "enabled": true
+        }
+      }
+    }
+  },
+  "channels": {
+    "feishu": {
+      "enabled": true,
+      "appId": "cli_a94098004b395cd6",
+      "appSecret": "RXkincW2hOrm8G7b0VpW04EMo8Zd555h",
+      "connectionMode": "websocket",
+      "domain": "feishu",
+      "groupPolicy": "open",
+      "dmPolicy": "open",
+      "allowFrom": [
+        "*"
+      ],
+      "webhookPath": "/feishu/events",
+      "reactionNotifications": "own",
+      "typingIndicator": true,
+      "resolveSenderNames": true
+    }
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "loopback",
+    "controlUi": {
+      "allowInsecureAuth": true
+    },
+    "auth": {
+      "mode": "token",
+      "token": "5e7ab299281fb2ffbdbb922f9939d9abbe5e15321f6cb901"
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    },
+    "nodes": {
+      "denyCommands": [
+        "camera.snap",
+        "camera.clip",
+        "screen.record",
+        "contacts.add",
+        "calendar.add",
+        "reminders.add",
+        "sms.send"
+      ]
+    }
+  },
+  "plugins": {
+    "slots": {
+      "memory": "memory-lancedb"
+    },
+    "entries": {
+      "feishu": {
+        "enabled": true,
+        "config": {}
+      },
+      "memory-lancedb": {
+        "enabled": false,
+        "config": {
+          "embedding": {
+            "apiKey": "",
+            "baseUrl": "http://172.23.96.1:11434/v1",
+            "model": "bge-m3:latest"
+          },
+          "dreaming": {
+            "enabled": true
+          }
+        }
+      },
+      "memory-core": {
+        "enabled": false
+      },
+      "minimax": {
+        "enabled": true
+      },
+      "deepseek": {
+        "enabled": true
+      },
+      "ollama": {
+        "enabled": true
+      },
+      "active-memory": {
+        "enabled": true
+      },
+      "lobster": {
+        "enabled": true
+      }
+    }
+  },
+  "context": {
+    "maxContextTokens": 160000,
+    "summarizeThreshold": 0.75,
+    "preserveRecentTurns": 10,
+    "monitoringEnabled": true
+  }
+}

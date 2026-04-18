@@ -1,0 +1,15 @@
+{
+  "gateway": {
+    "port": 3102,
+    "mode": "local",
+    "bind": "loopback",
+    "auth": {
+      "mode": "token",
+      "token": "86f3aa5d9307336f16543e2c33630f36cebe773d66bcf311"
+    }
+  },
+  "meta": {
+    "lastTouchedVersion": "2026.4.9",
+    "lastTouchedAt": "2026-04-10T04:58:35.179Z"
+  }
+}

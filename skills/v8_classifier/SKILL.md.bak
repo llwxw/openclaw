@@ -1,0 +1,272 @@
+---
+name: v8_classifier
+description: OpenClaw v8 场景分类器。调用 3104 API，将用户消息分类为9种意图场景（闲聊/任务/故障/模糊等）。用于理解用户消息的底层意图，配合 v8_scorer 做路由决策。
+version: 1.1.0
+---
+
+# v8_classifier
+
+> OpenClaw v8 场景分类器（端口 3104）
+>
+> 基于轻量多语言嵌入向量 + KNN，近距离 fallback
+
+---
+
+## 一、分类原理
+
+### 1.1 两层分类器架构
+
+**第一层：embedding 分类器**（主用）
+- 模型：`paraphrase-multilingual-MiniLM-L12-v2`（sentence-transformers，约 120MB，多语言支持）
+- 算法：KNN（3近邻，余弦距离）
+- 场景数据：`synthetic_training_data.py` 中的标注语料
+
+**第二层：规则兜底分类器**（降级）
+- 触发条件：embedding 模型加载失败、超时（>500ms）、置信度过低（similarity < 0.5）
+- 算法：正则模式匹配 + 关键词权重
+
+### 1.2 九种场景
+
+| 场景 | 说明 | 典型触发词 |
+|------|------|-----------|
+| `chitchat` | 闲聊，无任务意图 | 你好、天气、谢谢、再见 |
+| `task_multi_step` | 多步骤复杂任务 | 重构、分析、搭建、部署 |
+| `fault_recovery` | 故障诊断恢复 | 起不来、挂了、报错、崩了 |
+| `vague_request` | 意图模糊，需澄清 | 单独一个技术名词（nginx、docker） |
+| `novice_user` | 新手用户，需入门指导 | 新手、不懂、入门、教我 |
+| `expert_user` | 专家用户，需深度细节 | 底层、原理、源码、内核 |
+| `high_risk_automated` | 高风险操作，需二次确认 | rm -rf、chmod、删除文件 |
+| `task_status_query` | 任务状态查询 | 任务完成了吗、进度、状态 |
+| `cancel_task` | 取消任务 | 取消、停止、终止任务 |
+
+### 1.3 置信度判定
+
+> 置信度 = 1 - cosine_distance，即与最近邻的相似度（0-1，1 表示完全匹配）
+
+| 条件 | 分类结果 |
+|------|----------|
+| top1 相似度 < 0.5 | `low_confidence` → 触发 fallback 或澄清流程 |
+| top1 - top2 相似度差 < 0.1 | `ambiguous` → 需用户澄清 |
+| 否则 | `confident` → 直接返回场景标签 |
+
+---
+
+## 二、API 规范
+
+### 2.1 分类接口
+
+**端点**
+```
+POST http://127.0.0.1:3104/classify
+Content-Type: application/json
+```
+
+**请求**
+```json
+{
+  "text": "<用户消息文本>"
+}
+```
+
+**响应**
+```json
+{
+  "label": "task_multi_step",
+  "confidence": 0.73,
+  "meta": "confident",
+  "top_candidates": [
+    ["task_multi_step", 0.73],
+    ["fault_recovery", 0.21]
+  ],
+  "intercepted": false
+}
+```
+
+### 2.2 响应字段说明
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `label` | string\|null | 场景标签，`null` 表示置信度过低 |
+| `confidence` | float | top1 相似度 (0-1)，1 表示完全匹配 |
+| `meta` | string | `confident` / `low_confidence` / `ambiguous` |
+| `top_candidates` | array | 前2个候选场景及相似度 |
+| `intercepted` | boolean | 是否被硬拦截（触发高风险规则） |
+
+### 2.3 降级响应示例
+
+```json
+{
+  "label": null,
+  "confidence": 0.35,
+  "meta": "low_confidence",
+  "top_candidates": [
+    ["vague_request", 0.35],
+    ["chitchat", 0.28]
+  ],
+  "intercepted": false
+}
+```
+
+当 `meta` 为 `low_confidence` 或 `ambiguous` 时，应触发意图澄清流程。
+
+---
+
+## 三、意图澄清模板
+
+当分类置信度不足时，根据 `top_candidates` 动态生成选项请求用户澄清：
+
+**模板**
+```
+你的问题比较模糊，请确认你想要：
+1. [top1 场景的典型操作描述]
+2. [top2 场景的典型操作描述]
+3. 其他
+
+例如：请说"帮我 [具体操作] [具体目标]"
+```
+
+**示例**
+- `top_candidates: [["task_multi_step", 0.45], ["fault_recovery", 0.38]]`
+- 输出选项：1. 执行一个多步骤任务（如重构、部署）2. 排查和恢复故障
+
+---
+
+## 四、分类示例
+
+### 示例 1：多步骤任务
+
+**输入**：`"重构这个项目的用户认证模块"`
+
+```json
+{
+  "label": "task_multi_step",
+  "confidence": 0.81,
+  "meta": "confident",
+  "top_candidates": [["task_multi_step", 0.81], ["fault_recovery", 0.12]],
+  "intercepted": false
+}
+```
+
+### 示例 2：故障恢复
+
+**输入**：`"服务器起不来了，端口被占用"`
+
+```json
+{
+  "label": "fault_recovery",
+  "confidence": 0.89,
+  "meta": "confident",
+  "top_candidates": [["fault_recovery", 0.89], ["task_multi_step", 0.08]],
+  "intercepted": false
+}
+```
+
+### 示例 3：高风险操作
+
+**输入**：`"rm -rf /tmp/logs/*"`
+
+```json
+{
+  "label": "high_risk_automated",
+  "confidence": 0.94,
+  "meta": "confident",
+  "top_candidates": [["high_risk_automated", 0.94], ["task_multi_step", 0.04]],
+  "intercepted": true
+}
+```
+
+### 示例 4：模糊请求
+
+**输入**：`"nginx"`
+
+```json
+{
+  "label": null,
+  "confidence": 0.22,
+  "meta": "low_confidence",
+  "top_candidates": [["vague_request", 0.22], ["chitchat", 0.19]],
+  "intercepted": false
+}
+```
+
+### 示例 5：新手用户
+
+**输入**：`"我第一次用 docker，完全不懂"`
+
+```json
+{
+  "label": "novice_user",
+  "confidence": 0.76,
+  "meta": "confident",
+  "top_candidates": [["novice_user", 0.76], ["task_multi_step", 0.15]],
+  "intercepted": false
+}
+```
+
+### 示例 6：专家用户
+
+**输入**：`"解释一下 epoll 的底层实现原理"`
+
+```json
+{
+  "label": "expert_user",
+  "confidence": 0.83,
+  "meta": "confident",
+  "top_candidates": [["expert_user", 0.83], ["fault_recovery", 0.09]],
+  "intercepted": false
+}
+```
+
+---
+
+## 五、高风险操作处理规范
+
+### 5.1 拦截后的强制要求
+
+当 `intercepted === true` 或 `label === "high_risk_automated"` 时：
+
+1. **必须前置** `[!WARNING]` 标签
+2. **必须提供** 回滚/恢复方案
+3. **禁止自动执行**，需用户明确确认
+4. 典型触发模式：
+   - `rm -rf` / `rm -r`
+   - `chmod 777` / `chown`
+   - `drop table` / `delete from`（无 where）
+   - `kill -9` 系统关键进程
+   - `shutdown` / `reboot`（生产环境）
+
+### 5.2 与 v8_scorer 的协同
+
+- `v8_classifier` 负责**场景识别**，标记 `high_risk_automated` 等高风险场景，提供早期预警
+- `v8_scorer` 负责**复杂度评分**，当 `risk >= 3` 时同样强制 `SPAWN_SUBAGENT` 隔离执行
+- 两者独立运行，互为冗余保障：分类器拦截提供即时反馈，评分器确保策略兜底
+
+---
+
+## 六、故障处理与降级
+
+| 故障场景 | 降级行为 |
+|----------|----------|
+| embedding 模型加载失败 | 自动切换为规则兜底分类器 |
+| 分类请求超时（>500ms） | 触发规则兜底，返回保守分类结果 |
+| 规则兜底亦无法确定 | 返回 `label: "vague_request"`, `meta: "low_confidence"`，触发澄清流程 |
+| 服务完全不可用 | 调用方应跳过分类，直接进入通用处理流程 |
+
+---
+
+## 七、代码位置
+
+- Python 分类服务：`/home/ai/openclaw-classifier/python-service/`
+- 向量分类器：`classifier/scene_classifier.py`
+- 规则兜底：`classifier/rule_classifier.py`
+- Flask API：`app.py`（端口 3104）
+- 启动脚本：`python-service/start.sh`
+- 场景训练数据：`classifier/data/synthetic_training_data.py`
+
+---
+
+## 八、相关文档
+
+- [[v8_scorer]] - 任务复杂度评分器（端口 3103）
+- [[task_orchestrator]] - 任务编排器（整合评分+分类+路由）
+- [[scene-classifier]] - workspace 版场景分类器（相同实现）

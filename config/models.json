@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "providers": {
+    "minimax": {
+      "type": "openai-compatible",
+      "baseUrl": "https://api.minimax.chat/v1",
+      "apiKey": "${MINIMAX_API_KEY}"
+    },
+    "deepseek": {
+      "type": "openai-compatible",
+      "baseUrl": "https://api.deepseek.com/v1",
+      "apiKey": "${DEEPSEEK_API_KEY}"
+    }
+  },
+  "models": {
+    "fast": {
+      "provider": "minimax",
+      "modelId": "minimax-m2.5",
+      "fallback": "deep",
+      "timeout": 30000,
+      "maxRetries": 2
+    },
+    "deep": {
+      "provider": "deepseek",
+      "modelId": "deepseek-chat",
+      "fallback": "fast",
+      "timeout": 60000,
+      "maxRetries": 1
+    }
+  }
+}

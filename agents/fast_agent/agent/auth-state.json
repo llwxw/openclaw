@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "lastGood": {
+    "deepseek": "deepseek:default",
+    "ollama": "ollama:default"
+  },
+  "usageStats": {
+    "deepseek:default": {
+      "errorCount": 1,
+      "lastUsed": 1776083507561,
+      "failureCounts": {
+        "auth": 1
+      },
+      "lastFailureAt": 1776301398398,
+      "disabledUntil": 1776261879257,
+      "disabledReason": "billing",
+      "cooldownUntil": 1776301428398,
+      "cooldownReason": "auth"
+    },
+    "ollama:default": {
+      "errorCount": 0,
+      "lastUsed": 1776301682065
+    }
+  }
+}

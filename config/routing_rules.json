@@ -1,0 +1,35 @@
+{
+  "version": "1.0",
+  "rules": [
+    {
+      "id": "code_keywords",
+      "priority": 100,
+      "condition": { "contains": ["写代码", "编程", "重构", "debug", "脚本", "部署", "优化", "修复", "实现"] },
+      "target_agent": "fast_agent"
+    },
+    {
+      "id": "deep_keywords",
+      "priority": 100,
+      "condition": { "contains": ["分析", "推理", "数学", "证明", "论文", "原理"] },
+      "target_agent": "deep_agent"
+    },
+    {
+      "id": "classifier_task",
+      "priority": 80,
+      "condition": { "classifier_label": ["task_multi_step", "high_risk_automated", "fault_recovery"] },
+      "target_agent": "fast_agent"
+    },
+    {
+      "id": "classifier_reasoning",
+      "priority": 80,
+      "condition": { "classifier_label": ["expert_user", "vague_request"] },
+      "target_agent": "deep_agent"
+    },
+    {
+      "id": "fallback",
+      "priority": 0,
+      "condition": { "always": true },
+      "target_agent": "fast_agent"
+    }
+  ]
+}

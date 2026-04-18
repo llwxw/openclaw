@@ -1,0 +1,157 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "id": "6b061d51-e257-45be-9bc1-15a529722270",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "memory-maintain",
+      "enabled": true,
+      "createdAtMs": 1775278155107,
+      "updatedAtMs": 1776422114508,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 3 * * *",
+        "tz": "Asia/Shanghai"
+      },
+      "sessionTarget": "main",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "systemEvent",
+        "text": "✅ 每日记忆维护已完成"
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "state": {
+        "nextRunAtMs": 1776452400000,
+        "lastRunAtMs": 1776421823109,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 291399,
+        "lastDeliveryStatus": "not-requested",
+        "consecutiveErrors": 0
+      }
+    },
+    {
+      "id": "e3ff05f4-6d75-4c58-8f4c-d4de23b82ab1",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "memory-keeper",
+      "enabled": true,
+      "createdAtMs": 1775278283916,
+      "updatedAtMs": 1776422411499,
+      "schedule": {
+        "expr": "0 4 * * *",
+        "tz": "Asia/Shanghai",
+        "kind": "cron"
+      },
+      "sessionTarget": "main",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "systemEvent",
+        "text": "Memory Keeper 整理任务已执行"
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "state": {
+        "nextRunAtMs": 1776456000000,
+        "lastRunAtMs": 1776422257474,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 154025,
+        "lastDeliveryStatus": "not-requested",
+        "consecutiveErrors": 0
+      }
+    },
+    {
+      "id": "63a6537d-619d-4b32-b185-e1d3f3bdd93a",
+      "name": "Memory Dreaming Promotion",
+      "description": "[managed-by=memory-core.short-term-promotion] Promote weighted short-term recalls into MEMORY.md (limit=10, minScore=0.800, minRecallCount=3, minUniqueQueries=3, recencyHalfLifeDays=14, maxAgeDays=30).",
+      "enabled": true,
+      "createdAtMs": 1775833865688,
+      "updatedAtMs": 1776422257474,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 3 * * *"
+      },
+      "sessionTarget": "main",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "systemEvent",
+        "text": "__openclaw_memory_core_short_term_promotion_dream__"
+      },
+      "state": {
+        "nextRunAtMs": 1776452400000,
+        "lastRunAtMs": 1776422114508,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 142966,
+        "lastDeliveryStatus": "not-requested",
+        "consecutiveErrors": 0
+      }
+    },
+    {
+      "id": "b3c6834e-c671-4b21-b6d4-0dc9c86f0e84",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "wiki-learn",
+      "enabled": true,
+      "createdAtMs": 1776066765541,
+      "updatedAtMs": 1776441782346,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 * * * *",
+        "tz": "Asia/Shanghai",
+        "staggerMs": 300000
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "执行 ~/.openclaw/workspace/scripts/wiki-learn-once.sh 并将输出追加到 ~/.openclaw/workspace/memory/log.md"
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "state": {
+        "nextRunAtMs": 1776445359287,
+        "lastRunAtMs": 1776441759293,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 23053,
+        "lastDeliveryStatus": "not-delivered",
+        "consecutiveErrors": 0,
+        "lastDelivered": false
+      }
+    },
+    {
+      "id": "71f1b730-a7e3-492a-9f3d-0bafe590a517",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "summary-pruner",
+      "description": "每周日凌晨 4:00 清理 30 天前的 session-summary 文件（独立于 session-summary hook，作为备份保障）",
+      "enabled": true,
+      "createdAtMs": 1776170972604,
+      "updatedAtMs": 1776170972604,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 4 * * 0",
+        "tz": "Asia/Shanghai"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "执行以下命令并报告输出：\n```\nnode /home/ai/.openclaw/scripts/prune-old-summaries.js\n```\n不要做任何其他事情，只执行命令并返回输出结果。"
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "state": {
+        "nextRunAtMs": 1776542400000
+      }
+    }
+  ]
+}

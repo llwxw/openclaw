@@ -1,0 +1,7 @@
+{
+  "name": "task_orchestrator",
+  "description": "全自动任务编排：评分路由 + 上下文保护 + 子代理进度上报",
+  "version": "3.0.0",
+  "entry": "scripts/activator.sh",
+  "triggers": ["onUserMessage", "beforeTask", "onAssistantMessage"]
+}

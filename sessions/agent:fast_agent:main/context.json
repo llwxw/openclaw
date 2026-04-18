@@ -1,0 +1,28 @@
+{
+  "classification": {
+    "response": "[LLM响应] 基于你的输入，建议操作如下：...",
+    "intercepted": false,
+    "scene": "clarify",
+    "meta": "low_confidence",
+    "confidence": 0.36526161432266235
+  },
+  "scoring": {
+    "score": 62,
+    "factors": {
+      "logic": 0,
+      "risk": 3,
+      "duration": 1,
+      "resource": 0,
+      "uncertainty": 3,
+      "dependency": 0
+    },
+    "recommendedStrategy": "SPAWN_SUBAGENT",
+    "timeout": 180,
+    "_raw": {
+      "total": 7,
+      "max": 18
+    }
+  },
+  "timestamp": "2026-04-16T10:40:02.421Z",
+  "messagePreview": "A scheduled reminder has been triggered. The reminder content is:\n\n__openclaw_memory_core_short_term_promotion_dream__\nM"
+}

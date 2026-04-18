@@ -1,0 +1,12 @@
+# 评分规则调优配置
+data_source: "./data/tasks.db"
+min_samples: 50
+adjustments:
+  timeout_factor: 1.2
+  threshold_shift: 5
+strategies:
+  DIRECT: { max_score: 20 }
+  STEP_ARCHIVE: { max_score: 40 }
+  SPAWN_SUBAGENT: { max_score: 60 }
+  PARALLEL_SHARDS: { max_score: 80 }
+  MEGA_TASK: { max_score: 100 }

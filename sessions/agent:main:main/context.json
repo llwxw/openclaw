@@ -1,0 +1,21 @@
+{
+  "scoring": {
+    "score": 0,
+    "factors": {
+      "logic": 0,
+      "risk": 0,
+      "duration": 0,
+      "resource": 0,
+      "uncertainty": 0,
+      "dependency": 0
+    },
+    "recommendedStrategy": "DIRECT",
+    "timeout": 30,
+    "_raw": {
+      "total": 0,
+      "max": 18
+    }
+  },
+  "classification": null,
+  "timestamp": "2026-04-18T04:01:59.265Z"
+}

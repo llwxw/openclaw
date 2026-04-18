@@ -1,0 +1,28 @@
+{
+  "classification": {
+    "response": "[LLM响应] 基于你的输入，建议操作如下：...",
+    "intercepted": false,
+    "scene": "clarify",
+    "meta": "ambiguous",
+    "confidence": 0.528642475605011
+  },
+  "scoring": {
+    "score": 0,
+    "factors": {
+      "logic": 0,
+      "risk": 0,
+      "duration": 0,
+      "resource": 0,
+      "uncertainty": 0,
+      "dependency": 0
+    },
+    "recommendedStrategy": "DIRECT",
+    "timeout": 30,
+    "_raw": {
+      "total": 0,
+      "max": 18
+    }
+  },
+  "timestamp": "2026-04-15T05:30:44.233Z",
+  "messagePreview": "[message_id: om_x100b52c57d9ad8acc2c705a8585752c]\nou_f078a2787ee791cfa7b974fd499fd49f: 在不"
+}

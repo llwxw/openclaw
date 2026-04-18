@@ -1,0 +1,13 @@
+{
+  "classification": {
+    "response": "[LLM响应] 基于你的输入，建议操作如下：...",
+    "intercepted": false,
+    "scene": "clarify",
+    "meta": "low_confidence",
+    "confidence": 0.31177324056625366
+  },
+  "scoring": null,
+  "timestamp": "2026-04-18T02:34:25.057Z",
+  "messagePreview": "Read HEARTBEAT.md if it exists (workspace context). Follow it strictly. Do not infer or repeat old tasks from prior chat",
+  "_autoSpawned": false
+}

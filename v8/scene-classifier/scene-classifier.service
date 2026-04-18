@@ -1,0 +1,14 @@
+[Unit]
+Description=OpenClaw Scene Classifier
+After=network.target
+
+[Service]
+Type=simple
+User=ai
+WorkingDirectory=/home/ai/.openclaw/v8/scene-classifier
+ExecStart=/usr/bin/python3 api_server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

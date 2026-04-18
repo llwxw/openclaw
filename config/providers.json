@@ -1,0 +1,43 @@
+{
+  "version": "1.0",
+  "providers": [
+    {
+      "name": "minimax",
+      "type": "custom",
+      "endpoint": "https://api.minimax.chat/v1",
+      "accounts": [
+        {
+          "apiKey": "J99ouXWKXO8Zg5tLqv92YVsPNFhwuZc-z6z2ioeg7VE",
+          "models": [
+            {
+              "name": "minimax-m2.5",
+              "rateLimit": {
+                "rpm": 100,
+                "tpm": 80000
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "deepseek",
+      "type": "custom",
+      "endpoint": "https://api.deepseek.com/v1",
+      "accounts": [
+        {
+          "apiKey": "sk-8e6102d12a394cd1822ee2503d54c137",
+          "models": [
+            {
+              "name": "deepseek-chat",
+              "rateLimit": {
+                "rpm": 100,
+                "tpm": 80000
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

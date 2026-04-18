@@ -1,0 +1,272 @@
+require('dotenv').config();
+const fs = require('fs');
+const express = require('express');
+const http = require('http');
+const axios = require('axios');
+const WebSocket = require('ws');
+const path = require('path');
+const { createProxyMiddleware } = require('http-proxy-middleware');
+const NodeCache = require('node-cache');
+const { classify, score } = require('./clients/v8Client');
+
+// ========== 路由配置加载 ==========
+const MODELS_CONFIG = JSON.parse(fs.readFileSync('/home/ai/.openclaw/config/models.json'));
+const RULES_CONFIG = JSON.parse(fs.readFileSync('/home/ai/.openclaw/config/routing_rules.json'));
+const OPENCLAW_CONFIG = JSON.parse(fs.readFileSync('/home/ai/.openclaw/openclaw.json'));
+
+// 分类器缓存
+const classifyCache = new NodeCache({ stdTTL: parseInt(process.env.CLASSIFIER_CACHE_TTL) || 300 });
+
+// 路由决策函数 - 两阶段：先关键词，后分类器
+function routeAgent(userMessage, classifierResult = null) {
+  const rules = [...RULES_CONFIG.rules].sort((a, b) => b.priority - a.priority);
+  
+  // 阶段1：关键词匹配（优先级 100）
+  for (const rule of rules) {
+    if (rule.priority < 100) continue; // 只处理高优先级规则
+    if (rule.condition.always) continue;
+    
+    if (rule.condition.contains) {
+      const matched = rule.condition.contains.some(kw => userMessage.includes(kw));
+      if (matched) {
+        const { modelConfig } = getModelConfig(rule.target_agent);
+        logRouting(userMessage, rule.id, rule.target_agent, modelConfig?.modelId);
+        return { agentId: rule.target_agent, by: 'keyword' };
+      }
+    }
+  }
+  
+  // 阶段2：分类器标签匹配
+  if (classifierResult) {
+    for (const rule of rules) {
+      if (rule.condition.always) continue;
+      if (!rule.condition.classifier_label) continue;
+      
+      const matched = rule.condition.classifier_label.includes(classifierResult.scene);
+      if (matched) {
+        const { modelConfig } = getModelConfig(rule.target_agent);
+        logRouting(userMessage, rule.id, rule.target_agent, modelConfig?.modelId);
+        return { agentId: rule.target_agent, by: 'classifier' };
+      }
+    }
+  }
+  
+  // Fallback
+  const fallback = rules.find(r => r.condition.always);
+  const target = fallback ? fallback.target_agent : 'fast_agent';
+  const { modelConfig } = getModelConfig(target);
+  logRouting(userMessage, 'fallback', target, modelConfig?.modelId);
+  return { agentId: target, by: 'fallback' };
+}
+
+function logRouting(userMessage, ruleId, targetAgent, modelId) {
+  if (process.env.ROUTING_LOG_ENABLED !== 'true') return;
+  const logEntry = {
+    timestamp: new Date().toISOString(),
+    user_message: userMessage.substring(0, 100),
+    rule_triggered: ruleId,
+    target_agent: targetAgent,
+    actual_model: modelId || null
+  };
+  console.log(JSON.stringify(logEntry));
+}
+
+// 获取 Agent 的模型配置
+function getModelConfig(agentId) {
+  const agent = (OPENCLAW_CONFIG.agents?.list || []).find(a => a.id === agentId);
+  const modelRef = agent?.modelRef || 'fast';
+  const modelConfig = MODELS_CONFIG.models[modelRef];
+  const provider = MODELS_CONFIG.providers[modelConfig.provider];
+  return { modelRef, modelConfig, provider };
+}
+
+const app = express();
+app.use(express.json());
+
+// 静态文件服务
+app.use(express.static(path.join(__dirname, 'public')));
+
+const PORT = process.env.PROXY_PORT || 3105;
+const GATEWAY_URL = process.env.GATEWAY_URL || 'http://localhost:3108';
+const GATEWAY_WS = process.env.GATEWAY_WS || 'ws://localhost:3108';
+const BYPASS_MODE = process.env.BYPASS_MODE === 'true';
+const V8_TASK_API = process.env.V8_TASK_API || 'http://localhost:3103/api/task';
+const CONTEXT_API = process.env.CONTEXT_API || 'http://localhost:3101';
+
+let bypass = BYPASS_MODE;
+
+const log = (level, msg, data) => console.log(JSON.stringify({ level, time: new Date().toISOString(), msg, ...data }));
+
+app.get('/health', (req, res) => res.json({ status: 'ok', bypass }));
+app.post('/admin/bypass', (req, res) => { bypass = req.body.enabled === true; log('info', 'Bypass changed', { bypass }); res.json({ bypass }); });
+
+// 上下文管理函数
+async function getContext() {
+  try {
+    const res = await axios.get(`${CONTEXT_API}/api/context/full`, { timeout: 2000 });
+    return res.data.messages || [];
+  } catch { return []; }
+}
+
+async function addContextMessage(role, content) {
+  try {
+    await axios.post(`${CONTEXT_API}/api/context`, { role, content }, { timeout: 2000 });
+  } catch (err) { console.error('Context add failed:', err.message); }
+}
+
+app.post('/api/chat/send', async (req, res) => {
+  const { message, context = {} } = req.body;
+  if (!message) return res.status(400).json({ error: 'message is required' });
+
+  // 添加用户消息到上下文
+  await addContextMessage('user', message);
+
+  if (bypass) {
+    try {
+      const gwRes = await axios.post(`${GATEWAY_URL}/api/chat/send`, req.body, { timeout: 30000 });
+      return res.json(gwRes.data);
+    } catch (err) { return res.status(502).json({ error: 'Gateway unavailable' }); }
+  }
+
+  // ========== 路由决策（两阶段：先关键词，后分类器） ==========
+  try {
+  let routing = routeAgent(message); // 阶段1：关键词匹配
+  let classification = null;
+  
+  // 如果关键词未匹配，尝试分类器
+  if (routing.by === 'fallback') {
+    let classifierResult = classifyCache.get(message);
+    if (!classifierResult) {
+      try {
+        classifierResult = await classify(message);
+        classifyCache.set(message, classifierResult);
+        classification = classifierResult; // 保存结果，避免后续重复调用
+      } catch (e) {
+        log('warn', 'Classifier unavailable, using keyword fallback only', { error: e.message });
+        classifierResult = null;
+      }
+    } else {
+      classification = classifierResult;
+    }
+    if (classifierResult) {
+      routing = routeAgent(message, classifierResult); // 阶段2：分类器匹配
+      log('info', 'Classified', { scene: classifierResult.scene, isTask: classifierResult.isTask, routingBy: routing.by });
+    }
+  }
+
+  // 获取目标 Agent 的模型配置
+  const { modelRef, modelConfig, provider } = getModelConfig(routing.agentId);
+  log('info', 'Routed', { agentId: routing.agentId, model: modelConfig?.modelId, by: routing.by });
+
+  // ========== 复用分类结果，不再重复调用 ==========
+  // 如果在路由阶段已获取 classification，直接使用；否则尝试获取
+  if (!classification) {
+    classification = classifyCache.get(message);
+  }
+  
+  if (!classification) {
+    try {
+      classification = await classify(message);
+    } catch (e) {
+      log('warn', 'Fallback classify failed', { error: e.message });
+      // 降级：假设是任务
+      classification = { isTask: true, scene: 'unknown' };
+    }
+  }
+
+  if (!classification.isTask) {
+    const replies = { chitchat: '你好！有什么技术问题需要帮助？', fault_recovery: '请描述具体的故障现象和已尝试的操作，我将协助恢复。', vague_request: '我不太确定你的具体需求。请具体说明。' };
+    return res.json({ reply: replies[classification.scene] || '收到', scene: classification.scene, source: 'proxy' });
+  }
+
+  const scoring = await score(message, context);
+  log('info', 'Scored', { score: scoring.score, strategy: scoring.recommendedStrategy });
+
+  if (scoring.recommendedStrategy === 'DIRECT') {
+    const payload = { type: 'command', command: message.split(' ')[0] || 'echo', args: message.split(' ').slice(1), timeout: scoring.timeout, priority: Math.floor(scoring.score / 20), metadata: { prompt: message, strategy: scoring.recommendedStrategy, targetAgent: routing.agentId, model: modelConfig?.modelId } };
+    const taskRes = await axios.post(V8_TASK_API, payload, { timeout: 5000 });
+    return res.json({ reply: `✅ 任务已提交 (ID: ${taskRes.data.id})`, taskId: taskRes.data.id, strategy: 'DIRECT' });
+  }
+
+  // 非 DIRECT 任务：转发给 Gateway，携带路由信息
+  try {
+    const history = await getContext();
+    const payload = { 
+      ...req.body, 
+      history,
+      _routing: {
+        targetAgent: routing.agentId,
+        model: modelConfig?.modelId,
+        provider: modelConfig?.provider,
+        by: routing.by
+      }
+    };
+    const gwRes = await axios.post(`${GATEWAY_URL}/api/chat/send`, payload, { timeout: Math.max(scoring.timeout * 1000 + 5000, 30000) });
+    
+    const replyContent = gwRes.data.reply || gwRes.data.content || '';
+    await addContextMessage('assistant', replyContent);
+    
+    // 在返回结果中追加路由信息
+    return res.json({ 
+      ...gwRes.data, 
+      routing: {
+        targetAgent: routing.agentId,
+        model: modelConfig?.modelId,
+        by: routing.by
+      }
+    });
+  } catch (gwErr) {
+    log('error', 'Gateway forward failed', { error: gwErr.message, status: gwErr.response?.status });
+    return res.status(502).json({ error: `Gateway error: ${gwErr.message}` });
+  }
+  } catch (err) {
+    log('error', 'Proxy error', { error: err.message });
+    try { 
+      const gwRes = await axios.post(`${GATEWAY_URL}/api/chat/send`, req.body, { timeout: 30000 }); 
+      await addContextMessage('assistant', gwRes.data.reply || '');
+      return res.json({ ...gwRes.data, fallback: true }); 
+    }
+    catch { return res.status(502).json({ error: 'All services unavailable' }); }
+  }
+});
+
+// HTTP 服务器 + WebSocket
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server, path: '/ws' });
+
+wss.on('connection', (ws) => {
+  log('info', 'WebSocket client connected');
+  const target = new WebSocket(GATEWAY_WS);
+  
+  ws.on('message', (msg) => { if (target.readyState === WebSocket.OPEN) target.send(msg); });
+  target.on('message', (msg) => { if (ws.readyState === WebSocket.OPEN) ws.send(msg); });
+  ws.on('close', () => target.close());
+  target.on('close', () => ws.close());
+  ws.on('error', (e) => log('error', 'Client WS error', { error: e.message }));
+  target.on('error', (e) => log('error', 'Target WS error', { error: e.message }));
+});
+
+// 转发中间件：非 API 请求转发到 Gateway
+const gatewayProxy = createProxyMiddleware({
+  target: GATEWAY_URL,
+  changeOrigin: true,
+  ws: true,
+  logLevel: 'silent',
+  onError: (err, req, res) => {
+    log('error', 'Proxy error', { error: err.message });
+    res.status(502).send('Gateway unavailable');
+  }
+});
+
+// 注意：放在 API 路由之后，确保 /api/chat/send 不被转发
+app.use('/', gatewayProxy);
+
+// WebSocket 升级处理
+server.on('upgrade', (req, socket, head) => {
+  log('info', 'WebSocket upgrade', { url: req.url });
+  gatewayProxy.upgrade(req, socket, head);
+});
+
+server.listen(PORT, () => log('info', `Proxy started on port ${PORT}`, { gateway: GATEWAY_URL }));
+process.on('SIGTERM', () => process.exit(0));
+process.on('SIGINT', () => process.exit(0));

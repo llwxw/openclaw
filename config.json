@@ -1,0 +1,73 @@
+{
+  "meta": {"lastTouchedVersion":"2026.3.13","lastTouchedAt":"2026-03-22T13:00:54.791Z"},
+  "logging": {"level": "warn"},
+  "v8": {
+    "url": "http://127.0.0.1:3103",
+    "enabled": true
+  },
+  "sceneClassifier": {
+    "url": "http://127.0.0.1:3105",
+    "enabled": true
+  },
+  "plugins": {
+    "openclaw-cc-bridge": {
+      "enabled": true,
+      "model": "minimax-m2.5",
+      "allowedTools": ["Bash", "Read", "Edit", "Write", "Glob", "Grep", "WebFetch", "WebSearch", "Mildred", "Task*"],
+      "env": {
+        "ANTHROPIC_BASE_URL": "https://zhenze-huhehaote.cmecloud.cn/api/coding/v1",
+        "ANTHROPIC_AUTH_TOKEN": "J99ouXWKXO8Zg5tLqv92YVsPNFhwuZc-z6z2ioeg7VE",
+        "ANTHROPIC_MODEL": "minimax-m2.5"
+      }
+    }
+  },
+  "models": {
+    "providers": {
+      "ollama": {
+        "baseUrl": "http://172.23.96.1:11434",
+        "models": [{"id": "qwen2.5:14b", "name": "本地-qwen2.5-14b"}]
+      },
+      "deepseek": {
+        "apiKey": "sk-8e6102d12a394cd1822ee2503d54c137",
+        "baseUrl": "https://api.deepseek.com",
+        "models": [{"id": "deepseek-chat", "name": "云端-DeepSeek-Chat"}]
+      },
+      "volcengine-plan": {
+        "baseUrl": "https://ark.cn-beijing.volces.com/api/coding/v3",
+        "apiKey": "bef1c53c-e4da-4067-abf0-182c4f0daa7c",
+        "api": "openai-completions",
+        "models": [
+          {"id": "deepseek-v3.2", "name": "deepseek-v3.2", "contextWindow": 128000, "maxTokens": 32000},
+          {"id": "ark-code-latest", "name": "ark-code-latest", "contextWindow": 256000, "maxTokens": 32000},
+          {"id": "doubao-seed-code", "name": "doubao-seed-code", "contextWindow": 256000, "maxTokens": 32000},
+          {"id": "doubao-seed-2.0-code", "name": "doubao-seed-2.0-code", "contextWindow": 256000, "maxTokens": 128000},
+          {"id": "doubao-seed-2.0-pro", "name": "doubao-seed-2.0-pro", "contextWindow": 256000, "maxTokens": 128000},
+          {"id": "doubao-seed-2.0-lite", "name": "doubao-seed-2.0-lite", "contextWindow": 256000, "maxTokens": 128000},
+          {"id": "glm-4.7", "name": "glm-4.7", "contextWindow": 200000, "maxTokens": 128000},
+          {"id": "minimax-m2.5", "name": "minimax-m2.5", "contextWindow": 200000, "maxTokens": 128000},
+          {"id": "kimi-k2.5", "name": "kimi-k2.5", "contextWindow": 256000, "maxTokens": 32000}
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "volcengine-plan/ark-code-latest"
+      },
+      "models": {
+        "volcengine-plan/ark-code-latest": {},
+        "volcengine-plan/doubao-seed-2.0-code": {},
+        "volcengine-plan/doubao-seed-2.0-pro": {},
+        "volcengine-plan/doubao-seed-2.0-lite": {},
+        "volcengine-plan/doubao-seed-code": {},
+        "volcengine-plan/minimax-m2.5": {},
+        "volcengine-plan/glm-4.7": {},
+        "volcengine-plan/deepseek-v3.2": {},
+        "volcengine-plan/kimi-k2.5": {}
+      }
+    }
+  },
+  "commands": {"native": "auto", "nativeSkills": "auto", "restart": true, "ownerDisplay": "raw"},
+  "gateway": {"mode": "local", "auth": {"mode": "token", "token": "__OPENCLAW_REDACTED__"}}
+}

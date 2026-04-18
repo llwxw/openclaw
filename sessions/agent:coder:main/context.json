@@ -1,0 +1,28 @@
+{
+  "classification": {
+    "response": "[LLM响应] 基于你的输入，建议操作如下：...",
+    "intercepted": false,
+    "scene": "clarify",
+    "meta": "low_confidence",
+    "confidence": 0.3299858570098877
+  },
+  "scoring": {
+    "score": 41,
+    "factors": {
+      "logic": 0,
+      "risk": 0,
+      "duration": 0,
+      "resource": 0,
+      "uncertainty": 0,
+      "dependency": 3
+    },
+    "recommendedStrategy": "SPAWN_SUBAGENT",
+    "timeout": 120,
+    "_raw": {
+      "total": 3,
+      "max": 18
+    }
+  },
+  "timestamp": "2026-04-15T12:05:11.752Z",
+  "messagePreview": "Read HEARTBEAT.md if it exists (workspace context). Follow it strictly. Do not infer or repeat old tasks from prior chat"
+}

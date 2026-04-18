@@ -1,0 +1,7 @@
+{
+  "name": "memory-bootstrap",
+  "description": "Injects MEMORY.md and session summaries during agent bootstrap",
+  "version": "1.0.0",
+  "entry": "hooks/openclaw/handler.js",
+  "triggers": []
+}

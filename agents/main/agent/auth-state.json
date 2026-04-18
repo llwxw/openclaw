@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "lastGood": {
+    "deepseek": "deepseek:default",
+    "ollama": "ollama:default",
+    "openai": "openai:default",
+    "minimax": "minimax:cn"
+  },
+  "usageStats": {
+    "ollama:default": {
+      "errorCount": 2,
+      "lastUsed": 1776339984011,
+      "failureCounts": {
+        "format": 2
+      },
+      "lastFailureAt": 1776345853369,
+      "cooldownUntil": 1776345882879,
+      "cooldownReason": "format"
+    },
+    "deepseek:default": {
+      "errorCount": 0,
+      "lastUsed": 1776427580099,
+      "lastFailureAt": 1776345836597
+    },
+    "openai:default": {
+      "errorCount": 0,
+      "lastUsed": 1775798049931
+    },
+    "minimax:cn": {
+      "errorCount": 0,
+      "lastUsed": 1776524591432,
+      "lastFailureAt": 1776427659896
+    }
+  }
+}

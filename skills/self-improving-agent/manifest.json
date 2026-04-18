@@ -1,0 +1,7 @@
+{
+  "name": "self-improving-agent",
+  "description": "Auto-record corrections and errors, and apply learnings",
+  "version": "3.0.10",
+  "entry": "scripts/activator.sh",
+  "triggers": []
+}

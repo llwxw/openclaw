@@ -1,0 +1,323 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.4.5",
+    "lastTouchedAt": "2026-04-07T16:36:28.331Z"
+  },
+  "wizard": {
+    "lastRunAt": "2026-04-07T07:33:02.000Z",
+    "lastRunVersion": "2026.4.5",
+    "lastRunCommand": "doctor",
+    "lastRunMode": "local"
+  },
+  "logging": {
+    "level": "warn"
+  },
+  "auth": {
+    "profiles": {
+      "openai:default": {
+        "provider": "openai",
+        "mode": "api_key"
+      },
+      "deepseek:default": {
+        "provider": "deepseek",
+        "mode": "api_key"
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "ollama": {
+        "baseUrl": "http://172.23.96.1:11434",
+        "models": [
+          {
+            "id": "qwen2.5:14b",
+            "name": "qwen2.5:14b",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          }
+        ]
+      },
+      "deepseek": {
+        "baseUrl": "https://api.deepseek.com",
+        "apiKey": "sk-8e6102d12a394cd1822ee2503d54c137",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "deepseek-chat",
+            "name": "DeepSeek-V3",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "contextWindow": 65536,
+            "maxTokens": 8192
+          },
+          {
+            "id": "deepseek-reasoner",
+            "name": "DeepSeek-R1",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "contextWindow": 65536,
+            "maxTokens": 8192
+          }
+        ]
+      },
+      "codingplan": {
+        "baseUrl": "https://zhenze-huhehaote.cmecloud.cn/api/coding/v1",
+        "apiKey": "J99ouXWKXO8Zg5tLqv92YVsPNFhwuZc-z6z2ioeg7VE",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "minimax-m2.5",
+            "name": "minimax-m2.5 (Custom Provider)",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 204800,
+            "maxTokens": 4096
+          }
+        ]
+      },
+      "volcengine-plan": {
+        "baseUrl": "https://ark.cn-beijing.volces.com/api/coding/v3",
+        "apiKey": "bef1c53c-e4da-4067-abf0-182c4f0daa7c",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "ark-code-latest",
+            "name": "ark-code-latest",
+            "contextWindow": 256000,
+            "maxTokens": 32000,
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "doubao-seed-code",
+            "name": "doubao-seed-code",
+            "contextWindow": 256000,
+            "maxTokens": 32000,
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "glm-4.7",
+            "name": "glm-4.7",
+            "contextWindow": 200000,
+            "maxTokens": 128000,
+            "input": [
+              "text"
+            ]
+          },
+          {
+            "id": "deepseek-v3.2",
+            "name": "deepseek-v3.2",
+            "contextWindow": 128000,
+            "maxTokens": 32000
+          },
+          {
+            "id": "doubao-seed-2.0-code",
+            "name": "doubao-seed-2.0-code",
+            "contextWindow": 256000,
+            "maxTokens": 128000,
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "doubao-seed-2.0-pro",
+            "name": "doubao-seed-2.0-pro",
+            "contextWindow": 256000,
+            "maxTokens": 128000,
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "d{
+  "meta": {
+    "lastTouchedVersion": "2026.4.5",
+    "lastTouchedAt": "2026-04-07T16:36:28.331Z"
+  },
+  "wizard": {
+    "lastRunAt": "2026-04-07T07:33:02.000Z",
+    "lastRunVersion": "2026.4.5",
+    "lastRunCommand": "doctor",
+    "lastRunMode": "local"
+  },
+  "logging": {
+    "level": "warn"
+  },
+  "auth": {
+    "profiles": {
+      "openai:default": {
+        "provider": "openai",
+        "mode": "api_key"
+      },
+      "deepseek:default": {
+        "provider": "deepseek",
+        "mode": "api_key"
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "ollama": {
+        "baseUrl": "http://172.23.96.1:11434",
+        "models": [
+          {
+            "id": "qwen2.5:14b",
+            "name": "qwen2.5:14b",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          }
+        ]
+      },
+      "deepseek": {
+        "baseUrl": "https://api.deepseek.com",
+        "apiKey": "sk-8e6102d12a394cd1822ee2503d54c137",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "deepseek-chat",
+            "name": "DeepSeek-V3",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "contextWindow": 65536,
+            "maxTokens": 8192
+          },
+          {
+            "id": "deepseek-reasoner",
+            "name": "DeepSeek-R1",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "contextWindow": 65536,
+            "maxTokens": 8192
+          }
+        ]
+      },
+      "codingplan": {
+        "baseUrl": "https://zhenze-huhehaote.cmecloud.cn/api/coding/v1",
+        "apiKey": "J99ouXWKXO8Zg5tLqv92YVsPNFhwuZc-z6z2ioeg7VE",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "minimax-m2.5",
+            "name": "minimax-m2.5 (Custom Provider)",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 204800,
+            "maxTokens": 4096
+          }
+        ]
+      },
+      "volcengine-plan": {
+        "baseUrl": "https://ark.cn-beijing.volces.com/api/coding/v3",
+        "apiKey": "bef1c53c-e4da-4067-abf0-182c4f0daa7c",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "ark-code-latest",
+            "name": "ark-code-latest",
+            "contextWindow": 256000,
+            "maxTokens": 32000,
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "doubao-seed-code",
+            "name": "doubao-seed-code",
+            "contextWindow": 256000,
+            "maxTokens": 32000,
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "glm-4.7",
+            "name": "glm-4.7",
+            "contextWindow": 200000,
+            "maxTokens": 128000,
+            "input": [
+              "text"
+            ]
+          },
+          {
+            "id": "deepseek-v3.2",
+            "name": "deepseek-v3.2",
+            "contextWindow": 128000,
+            "maxTokens": 32000
+          },
+          {
+            "id": "doubao-seed-2.0-code",
+            "name": "doubao-seed-2.0-code",
+            "contextWindow": 256000,
+            "maxTokens": 128000,
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "doubao-seed-2.0-pro",
+            "name": "doubao-seed-2.0-pro",
+            "contextWindow": 256000,
+            "maxTokens": 128000,
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          {
+            "id": "d
