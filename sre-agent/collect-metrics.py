@@ -239,15 +239,15 @@ def classify(q_curr, sr, n_proxy):
     H = 0.6 * load_health + 0.4 * quality_health
     L = min(n_proxy / 2.0, 1.0)
     # 五态判定（钱学森第十章）
-    # stable: H>0.5且L<0.5 → 系统健康且低负载
+    # stable: H>=0.5且L<0.5 → 系统健康且低负载
     # warning: H<0.5 → 系统健康度不足
     # overload: L>0.5且H>0.4 → 高负载但未发散
     # diverging: H<0.4且L>0.5 → 系统正在发散
     # drifting: 其他组合 → 慢性漂移
-    if H > 0.5 and L < 0.5:
+    # 修复：H=0.5 时应判为 stable 或 warning，不能落入 drifting
+    if H >= 0.5 and L < 0.5:
         return "stable", H, L
     elif H < 0.4 and L > 0.5:
-        # 发散区优先级最高（H<0.4说明系统已严重恶化）
         return "diverging", H, L
     elif H < 0.5:
         return "warning", H, L
