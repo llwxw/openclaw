@@ -1,0 +1,77 @@
+version: '1.0'
+last_updated: '2026-04-20T13:10:00+08:00'
+parameters:
+  SPAWN_ON:
+    description: 高于此值派发新任务。滞环上限。
+    current: 20
+    min: 15
+    max: 40
+    safe_range: 15-30
+    theory: 钱学森第十一章：滞环控制，spawn_on<spawn_off，防止触发倒置
+  SPAWN_OFF:
+    description: 低于此值停止派发。滞环下限。
+    current: 19
+    min: 10
+    max: 35
+    safe_range: 15-28
+    theory: 钱学森第十一章：滞环宽度=ON-OFF=5，spawn_on<spawn_off
+  MAX_CONCURRENT_TASKS:
+    description: 系统最大并发容量。n = q/max_c 的分母。
+    current: 11
+    min: 2
+    max: 50
+    safe_range: 5-15
+    theory: n小于0.5即绝对稳定，提高容量等于降低负载率
+  SCORE_THRESHOLD:
+    description: 任务评分阈值，高于此分数才派发。
+    current: 40
+    min: 20
+    max: 60
+    safe_range: 25-50
+    theory: 过滤低质量任务，保护系统
+  CRON_INTERVAL_SECONDS:
+    description: 采样间隔。越短越敏感但开销越大。
+    current: 60
+    min: 10
+    max: 300
+    safe_range: 30-120
+    theory: 采样频率应高于系统变化频率2倍
+describing_function:
+  chitchat:
+    K_max: 0.95
+    n_max: 12
+    p: 1.8
+  code_generation:
+    K_max: 0.92
+    n_max: 8
+    p: 2.1
+  fault_recovery:
+    K_max: 0.75
+    n_max: 4
+    p: 3.2
+  math_reasoning:
+    K_max: 0.88
+    n_max: 5
+    p: 2.8
+safety:
+  critical_thresholds:
+    n_ratio: 0.5
+    queue_length: 100
+    failure_rate: 0.2
+    memory_usage_percent: 90
+    disk_usage_percent: 95
+  action_on_critical: pause_auto_tuning_and_alert
+  require_confirmation_for:
+  - restart_gateway
+  - clear_queue
+  - scale_up_concurrency_above_15
+  - modify_threshold_below_25
+evolution_policy:
+  convergence_threshold: 0.01
+  max_adjustments_per_day: 10
+  min_observation_periods: 5
+cost_function_weights:
+  failure_rate: 0.5
+  latency: 0.4
+  api_cost: 0.1
+current_mode: normal
