@@ -216,7 +216,7 @@ async function extractMessages(filePath, messageCount = 40) {
  * @param {string} sessionKey
  * @returns {Promise<{entries: EphemeralEntry[], preview: string}>}
  */
-async function readEphemeralEntries(sessionKey) {
+async function readEphemeralEntries(sessionKey, cutoffTime = null) {
   /** @type {EphemeralEntry[]} */
   const allEntries = [];
   
@@ -235,6 +235,8 @@ async function readEphemeralEntries(sessionKey) {
           try {
             const entry = JSON.parse(line);
             if (entry.sessionKey === sessionKey) {
+              // timestamp 过滤：只保留 cutoffTime 之前的条目（区分新旧 session）
+              if (cutoffTime && entry.timestamp >= cutoffTime) continue;
               allEntries.push(entry);
             }
           } catch { /* skip */ }
@@ -257,7 +259,7 @@ async function readEphemeralEntries(sessionKey) {
   
   // 生成预览文本
   const preview = entries.length > 0
-    ? entries.map(e => `[${e.classification?.scene || '?'}] score=${e.scoring?.score || 0} "${e.textPreview || e.text.slice(0, 80)}"`).join('\n')
+    ? entries.map(e => `[${e.scene || '?'}] score=${e.score || 0} "${e.preview.slice(0, 80)}"`).join('\n')
     : '';
   
   return { entries, preview };
@@ -372,63 +374,71 @@ ${sessionContent}
  * @param {string} ephemeralPreview
  * @returns {Promise<{summary: string, entities: Array<{action:string,name:string,file:string,content:string}>}>}
  */
-async function generateSummaryWithEntities(sessionContent, ephemeralPreview) {
-  const prompt = buildSummaryPrompt(sessionContent, ephemeralPreview);
+/**
+ * 本地启发式摘要生成（不依赖外部 API）。
+ * 从 ephemeral 数据中提取关键信息。
+ */
+function localSummaryFromEphemeral(ephemeralPreview, sessionContent) {
+  const lines = ephemeralPreview ? ephemeralPreview.split("\n") : [];
   
-  const postData = JSON.stringify({
-    model: "minimax-m2.5",
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0.3,
-    max_tokens: 800,
-  });
+  // 提取场景类型
+  const scenes = new Set();
+  const scores = [];
+  const strategies = new Set();
+  
+  for (const line of lines) {
+    const sceneMatch = line.match(/\[([^\]]+)\]/);
+    if (sceneMatch) scenes.add(sceneMatch[1]);
+    const scoreMatch = line.match(/score=(\d+)/);
+    if (scoreMatch) scores.push(parseInt(scoreMatch[1]));
+    const strategyMatch = line.match(/(DIRECT|STEP|SPAWN_SUBAGENT|PARALLEL|MEGA)/);
+    if (strategyMatch) strategies.add(strategyMatch[1]);
+  }
+  
+  // 从第一行内容推断主题
+  let theme = "会话摘要";
+  if (sessionContent && sessionContent.trim()) {
+    const firstUserLine = sessionContent.split("\n").find(l => l.startsWith("user:"));
+    if (firstUserLine) {
+      theme = firstUserLine.replace(/^user:\s*/, "").slice(0, 40).trim() || theme;
+    }
+  }
+  
+  // 分析 AI 决策模式
+  const avgScore = scores.length > 0 ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : "N/A";
+  const maxScore = scores.length > 0 ? Math.max(...scores) : 0;
+  const minScore = scores.length > 0 ? Math.min(...scores) : 0;
+  const sceneList = [...scenes].join(", ") || "未知";
+  const strategyList = [...strategies].join(", ") || "DIRECT";
+  
+  let decisionMode = "以直接响应为主";
+  if (maxScore > 60) decisionMode = `高复杂度任务为主（平均分${avgScore}，最高${maxScore}），倾向${strategyList}`;
+  else if (maxScore > 40) decisionMode = `中等复杂度（平均分${avgScore}），策略分布：${strategyList}`;
+  else decisionMode = `低复杂度直接响应为主（平均分${avgScore}），场景类型：${sceneList}`;
+  
+  const summary = `## 主题
+${theme}
 
-  return new Promise((resolve) => {
-    let settled = false;
-    const doResolve = (v) => {
-      if (settled) return;
-      settled = true;
-      resolve(v);
-    };
+## AI 决策模式
+${decisionMode}
 
-    const req = http.request(
-      "https://zhenze-huhehaote.cmecloud.cn/api/coding/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Content-Length": Buffer.byteLength(postData),
-          "Authorization": "Bearer J99ouXWKXO8Zg5tLqv92YVsPNFhwuZc-z6z2ioeg7VE",
-        },
-      },
-      (res) => {
-        let data = "";
-        res.on("data", (c) => (data += c));
-        res.on("end", () => {
-          try {
-            const parsed = JSON.parse(data);
-            const text = parsed.choices?.[0]?.message?.content || "";
-            const result = parseLLMOutput(text.trim());
-            doResolve(result);
-          } catch {
-            doResolve(generateFallbackResult(sessionContent));
-          }
-        });
-      }
-    );
+## 关键决策
+无
 
-    req.on("error", () => doResolve(generateFallbackResult(sessionContent)));
+## 重要发现
+- 场景类型分布：${sceneList}
+- 复杂度评分：${scores.length > 0 ? `平均${avgScore}，范围${minScore}-${maxScore}` : "无评分数据"}
+- 策略选择：${strategyList}
 
-    // 20s 单边超时
-    const timer = setTimeout(() => {
-      try { req.destroy(); } catch { /* noop */ }
-      doResolve(generateFallbackResult(sessionContent));
-    }, LLM_TIMEOUT_MS);
+## 待跟进
+见原始对话记录`;
 
-    req.on("close", () => clearTimeout(timer));
+  return { summary, entities: [] };
+}
 
-    req.write(postData);
-    req.end();
-  });
+async function generateSummaryWithEntities(sessionContent, ephemeralPreview) {
+  // 优先用本地启发式（不依赖外部 API）
+  return localSummaryFromEphemeral(ephemeralPreview, sessionContent);
 }
 
 /**
@@ -639,7 +649,7 @@ async function run(event) {
 
   // 3. 读取 ephemeral 记忆碎片
   const prevSessionId = event.context?.previousSessionEntry?.sessionId || event.sessionKey;
-  const { entries, preview: ephemeralPreview } = await readEphemeralEntries(prevSessionId);
+  const { entries, preview: ephemeralPreview } = await readEphemeralEntries(prevSessionId, now.toISOString());
   const hasEphemeral = entries.length > 0;
 
   // 4. 生成摘要 + entity 升格
