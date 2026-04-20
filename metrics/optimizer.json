@@ -1,0 +1,30 @@
+[
+  {
+    "status": "adjusted",
+    "parameter": "SCORE_THRESHOLD",
+    "current_value": 40,
+    "proposed_value": 40.0,
+    "current_J": 0.0021,
+    "simulated_J": 0.0037,
+    "J_change": 0.001549,
+    "J_change_percent": 73.48,
+    "direction": "improved",
+    "converged": false,
+    "timestamp": "2026-04-19T15:10:09.067091+00:00",
+    "last_adjustment_time": 1776611409.067119
+  },
+  {
+    "status": "adjusted",
+    "parameter": "SPAWN_ON",
+    "current_value": 30,
+    "proposed_value": 28.0,
+    "current_J": 0.0021,
+    "simulated_J": 0.0,
+    "J_change": -0.002108,
+    "J_change_percent": -100.0,
+    "direction": "worsened",
+    "converged": false,
+    "timestamp": "2026-04-19T15:10:49.680368+00:00",
+    "last_adjustment_time": 1776611449.6803873
+  }
+]

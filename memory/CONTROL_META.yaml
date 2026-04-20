@@ -3,21 +3,21 @@ last_updated: '2026-04-20T13:10:00+08:00'
 parameters:
   SPAWN_ON:
     description: 高于此值派发新任务。滞环上限。
-    current: 20
+    current: 36
     min: 15
     max: 40
     safe_range: 15-30
     theory: 钱学森第十一章：滞环控制，spawn_on<spawn_off，防止触发倒置
   SPAWN_OFF:
     description: 低于此值停止派发。滞环下限。
-    current: 19
+    current: 29
     min: 10
     max: 35
     safe_range: 15-28
     theory: 钱学森第十一章：滞环宽度=ON-OFF=5，spawn_on<spawn_off
   MAX_CONCURRENT_TASKS:
     description: 系统最大并发容量。n = q/max_c 的分母。
-    current: 11
+    current: 31
     min: 2
     max: 50
     safe_range: 5-15

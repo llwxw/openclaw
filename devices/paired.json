@@ -69,7 +69,7 @@
     },
     "createdAtMs": 1774180884380,
     "approvedAtMs": 1774180884380,
-    "displayName": "gateway:doctor.memory.status"
+    "displayName": "agent"
   },
   "90c248a21444bd53f29fe35b8a49b54893aa4f16fd8ce0a3088687bc503d7f83": {
     "deviceId": "90c248a21444bd53f29fe35b8a49b54893aa4f16fd8ce0a3088687bc503d7f83",
@@ -107,7 +107,7 @@
           "operator.write"
         ],
         "createdAtMs": 1774854977459,
-        "lastUsedAtMs": 1776524677824
+        "lastUsedAtMs": 1776695031017
       }
     },
     "createdAtMs": 1774854977459,

@@ -10,6 +10,7 @@ const http = require('http');
 const SCORER_URL = 'http://127.0.0.1:3103';
 const CLASSIFIER_URL = 'http://127.0.0.1:3105';
 const PORT = 3102;
+const HOST = '127.0.0.1'; // 本地监听
 
 function proxy(req, res, target, path) {
   const headers = { ...req.headers };
@@ -59,7 +60,7 @@ const server = http.createServer((req, res) => {
   res.end(JSON.stringify({ error: 'Not found', pathname: url.pathname }));
 });
 
-server.listen(PORT, '0.0.0.0', () => {
+server.listen(PORT, '127.0.0.1', () => {
   console.log(`[v8-router] Listening on ${PORT}`);
   console.log(`  /health      → 200 OK`);
   console.log(`  /api/score   → proxy to ${SCORER_URL}`);

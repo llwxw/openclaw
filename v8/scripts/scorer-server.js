@@ -8,12 +8,23 @@ const http = require('http');
 const scoring = require('../src/scoring/scoring');
 
 const PORT = process.env.PORT || 3103;
-const HOST = process.env.HOST || '0.0.0.0';
+const HOST = process.env.HOST || '127.0.0.1'; // 改为本地监听
+const MAX_BODY_SIZE = 1_000_000; // 1MB 限制
 
 function parseBody(req) {
   return new Promise((resolve, reject) => {
     let body = '';
-    req.on('data', chunk => (body += chunk));
+    let size = 0;
+    
+    req.on('data', chunk => {
+      size += chunk.length;
+      if (size > MAX_BODY_SIZE) {
+        req.destroy();
+        reject(new Error('Request body too large'));
+        return;
+      }
+      body += chunk;
+    });
     req.on('end', () => {
       try { resolve(body ? JSON.parse(body) : {}); }
       catch { reject(new Error('Invalid JSON')); }
@@ -28,22 +39,16 @@ const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  if (req.method === 'OPTIONS') {
-    res.writeHead(204);
-    res.end();
-    return;
-  }
+  if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
 
-  const url = new URL(req.url, `http://${req.headers.host}`);
+  const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
 
-  // Health check
   if (url.pathname === '/health' || url.pathname === '/') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ status: 'ok', service: 'v8-scorer', port: PORT }));
     return;
   }
 
-  // Score endpoint
   if (req.method === 'POST' && (url.pathname === '/api/score' || url.pathname === '/score')) {
     try {
       const body = await parseBody(req);
@@ -56,13 +61,13 @@ const server = http.createServer(async (req, res) => {
       res.end(JSON.stringify(result));
     } catch (err) {
       console.error('[scorer] Error:', err.message);
-      res.writeHead(500, { 'Content-Type': 'application/json' });
+      const status = err.message.includes('too large') ? 413 : 500;
+      res.writeHead(status, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: err.message }));
     }
     return;
   }
 
-  // Not found
   res.writeHead(404, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify({ error: 'Not found' }));
 });
@@ -70,15 +75,8 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, HOST, () => {
   console.log(`[scorer] v8 scoring server running on http://${HOST}:${PORT}`);
   console.log(`[scorer] Endpoint: POST /api/score { prompt: "..." }`);
+  console.log(`[scorer] Max body size: ${MAX_BODY_SIZE} bytes`);
 });
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('[scorer] SIGTERM, shutting down');
-  server.close(() => process.exit(0));
-});
-
-process.on('SIGINT', () => {
-  console.log('[scorer] SIGINT, shutting down');
-  server.close(() => process.exit(0));
-});
+process.on('SIGTERM', () => { server.close(() => process.exit(0)); });
+process.on('SIGINT', () => { server.close(() => process.exit(0)); });

@@ -1,0 +1,38 @@
+  File "/home/ai/.openclaw/sre-agent/collect-metrics.py", line 135
+    else:           return "critical"
+    ^
+SyntaxError: invalid syntax
+Traceback (most recent call last):
+  File "/home/ai/.openclaw/sre-agent/collect-metrics.py", line 241, in <module>
+    adjustment_made = f"FUSE_RECOVERY fuse→safe ON:{cur_on}→45 max_c:{cur_max_c}→5"
+NameError: name 'cur_on' is not defined
+Traceback (most recent call last):
+  File "/home/ai/.openclaw/sre-agent/collect-metrics.py", line 240, in <module>
+    H_fast_new = ewma(ewma_state.get("H_fast"), H, ALPHA_FAST)
+NameError: name 'ewma_state' is not defined
+  File "/home/ai/.openclaw/sre-agent/collect-metrics.py", line 274
+    adjustment_made = f"LAUNCH_ENTER delta_H={delta_H:.3f} delta_n={delta_n:.3f}"
+    ^
+IndentationError: unexpected indent
+Traceback (most recent call last):
+  File "/home/ai/.openclaw/sre-agent/collect-metrics.py", line 271, in <module>
+    if q_rate < -0.1:
+NameError: name 'q_rate' is not defined
+  File "/home/ai/.openclaw/sre-agent/collect-metrics.py", line 460
+    print(f"[DEBUG] CAP: n={n_proxy:.2f} cur_max_c={cur_max_c} new_c={target_max_c}")mode_note = f"[LAUNCH_HOLDING:q_↑{q_rate:.2f}]"
+                                                                                     ^
+SyntaxError: invalid syntax
+  File "/home/ai/.openclaw/sre-agent/collect-metrics.py", line 437
+    print(f"[DEBUG] top: sup={ewma_state.get("suppressed_cycles",0)} elap={elapsed:.0f} q_rate={q_rate:.4f} q_curr={q_curr} cur_max_c={cur_max_c} n={n_proxy:.2f}")
+                                              ^
+SyntaxError: invalid syntax
+  File "/home/ai/.openclaw/sre-agent/collect-metrics.py", line 437
+    print(f"[DEBUG] top: sup={ewma_state.get("suppressed_cycles",0)} elap={elapsed:.0f} q_rate={q_rate:.4f} q_curr={q_curr} cur_max_c={cur_max_c} n={n_proxy:.2f}")
+                                              ^
+SyntaxError: invalid syntax
+[DEBUG] CAP CHECK: n=0.0000 q=0 cur_max_c=5
+[DEBUG] CAP CHECK: n=0.2000 q=1 cur_max_c=5
+  File "/home/ai/.openclaw/sre-agent/collect-metrics.py", line 487
+    sc_before_reset = ewma_state.get("suppressed_cycles", 0)
+    ^
+IndentationError: expected an indented block

@@ -1,12 +1,12 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.4.15",
-    "lastTouchedAt": "2026-04-18T02:33:29.577Z"
+    "lastTouchedAt": "2026-04-18T12:49:52.595Z"
   },
   "wizard": {
-    "lastRunAt": "2026-04-17T11:34:24.674Z",
+    "lastRunAt": "2026-04-18T04:23:59.547Z",
     "lastRunVersion": "2026.4.15",
-    "lastRunCommand": "onboard",
+    "lastRunCommand": "doctor",
     "lastRunMode": "local"
   },
   "logging": {
@@ -152,7 +152,18 @@
       "compaction": {
         "mode": "safeguard"
       }
-    }
+    },
+    "list": [
+      {
+        "id": "main"
+      },
+      {
+        "id": "orchestrator",
+        "name": "orchestrator",
+        "workspace": "/home/ai/.openclaw/agents/orchestrator",
+        "agentDir": "/home/ai/.openclaw/agents/orchestrator/agent"
+      }
+    ]
   },
   "tools": {
     "profile": "coding"
@@ -283,11 +294,5 @@
         "enabled": true
       }
     }
-  },
-  "context": {
-    "maxContextTokens": 160000,
-    "summarizeThreshold": 0.75,
-    "preserveRecentTurns": 10,
-    "monitoringEnabled": true
   }
 }

@@ -19,7 +19,7 @@
     },
     "deepseek:default": {
       "errorCount": 0,
-      "lastUsed": 1776427580099,
+      "lastUsed": 1776606213181,
       "lastFailureAt": 1776345836597
     },
     "openai:default": {
@@ -28,7 +28,7 @@
     },
     "minimax:cn": {
       "errorCount": 0,
-      "lastUsed": 1776524591432,
+      "lastUsed": 1776702873064,
       "lastFailureAt": 1776427659896
     }
   }

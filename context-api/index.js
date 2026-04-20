@@ -9,6 +9,7 @@ const app = express();
 app.use(express.json());
 
 // 配置
+const HOST = process.env.HOST || '127.0.0.1';
 const PORT = process.env.PORT || 3101;
 const LLM_API_URL = process.env.LLM_API_URL || 'http://localhost:11434/api/generate';
 const LLM_MODEL = process.env.LLM_MODEL || 'qwen2.5:7b';
@@ -164,7 +165,7 @@ app.post('/api/context', async (req, res) => {
  return res.status(400).json({ error: 'role and content required' });
  }
 
- if (session) sessionId = session;
+ if (session) { sessionId = session.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64); }
  await addMessage(role, content);
 
  const tokenCount = getCurrentTokenCount();
@@ -215,7 +216,7 @@ app.post('/api/context/clear', (req, res) => {
  sessionMessages = [];
  lastSummary = '';
  compressionCount = 0;
- if (session) sessionId = session;
+ if (session) { sessionId = session.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64); }
  logger.info({ sessionId }, 'Context cleared');
  res.json({ status: 'cleared', sessionId });
 });
@@ -232,8 +233,8 @@ app.get('/health', (req, res) => {
 
 // 启动
 loadLatestSnapshot().then(() => {
- app.listen(PORT, () => {
- logger.info(`Context API listening on ${PORT}, session: ${sessionId}`);
+ app.listen(PORT, HOST, () => {
+ logger.info(`Context API listening on ${HOST}:${PORT}, session: ${sessionId}`);
  });
 });
 
