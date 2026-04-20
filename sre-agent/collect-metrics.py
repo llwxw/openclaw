@@ -419,9 +419,12 @@ if current_mode != "launch":
     # 修复2：delta_n>0.3 在恢复期（H>0.5且n<0.8）时不应触发LAUNCH
     #       钱学森：过载恢复期n升高是正常响应，不是系统失控
     # 注意：current_zone 在 line 540 才计算，这里用 get_sagi_zone(n_proxy) 直接计算
-    unstable_signal = ((delta_H > CHANGE_THRESHOLD and H < 0.5) or
+    # 钱学森第十章：trajectory 指向稳定时，即使 H<0.5 也不视为危险
+    # 修复：H<0.5 但 trajectory=toward_stable 说明系统在自然恢复，不是失控
+    recovering_stable = (H < 0.5 and trajectory == "toward_stable")
+    unstable_signal = ((delta_H > CHANGE_THRESHOLD and H < 0.5 and not recovering_stable) or
                        (delta_n > 0.3 and get_sagi_zone(n_proxy) in ["critical", "diverging"]) or
-                       is_drifting or K_delta < -0.1)
+                       (is_drifting and trajectory != "toward_stable") or K_delta < -0.1)
     if unstable_signal:
         launch_consecutive = launch_consecutive + 1
     else:
@@ -449,32 +452,48 @@ else:
     elapsed = datetime.now().timestamp() - launch_entry_time if launch_entry_time else 0
 
     # =============================================================
-    # 第一步：萨奇图主动干预（钱学森第八章：LAUNCH期间主动调整max_c）
-    # 无论哪个分支，在退出LAUNCH前都尝试使 n < 0.5（无条件稳定条件）
+    # 第一步：紧急退出检查（q=0 表示过载已完全消退，无需继续等待）
+    # 钱学森第十二章：q 是最直接的系统负载指标，q=0 意味着绝对安全
     # =============================================================
-    launch_capacity_adjusted = False
-    if n_proxy > 0.5 and cur_max_c < 50:
-        target_max_c = int(q_curr / 0.45) + 1
-        target_max_c = max(cur_max_c + 1, min(target_max_c, 50))
-        if target_max_c > cur_max_c:
-            adjustment_made = 'LAUNCH_CAPACITY n=%.2f>0.5 -> max_c:%d->%d' % (n_proxy, cur_max_c, target_max_c)
-            adjust_type_this_run = 'LAUNCH_capacity'
-            cur_max_c = target_max_c
-            launch_capacity_adjusted = True
-            n_proxy = q_curr / cur_max_c
-
-    if not launch_capacity_adjusted and (ewma_state.get("suppressed_cycles", 0) >= 10 or elapsed >= LAUNCH_TIMEOUT_SECS):
-        # 只有在本次未做容量调整时才接受超时退出（钱学森第十二章）
-        sc_before_reset = ewma_state.get("suppressed_cycles", 0)
+    if q_curr == 0 and q_rate <= 0 and n_proxy < 0.5:
         current_mode = "normal"
         launch_exit = True
         ewma_state["launch_entry_time"] = None
         ewma_state["mode"] = "normal"
         ewma_state["suppressed_cycles"] = 0
-        ewma_state["launch_cooldown_until"] = datetime.now().timestamp() + 60
-        adjustment_made = f"LAUNCH_TIMEOUT sc={sc_before_reset}→0 ({elapsed:.0f}s)"
+        ewma_state["launch_cooldown_until"] = datetime.now().timestamp() + 30
+        adjustment_made = f"LAUNCH_EXIT(q=0) H={H:.3f} n={n_proxy:.2f} q_rate={q_rate:.2f}"
         adjust_type_this_run = "LAUNCH_exit"
-        mode_note = "[LAUNCH_EXIT_TIMEOUT]"
+        mode_note = "[LAUNCH_EXIT:q_empty]"
+
+    # =============================================================
+    # 第二步：萨奇图主动干预（钱学森第八章：LAUNCH期间主动调整max_c）
+    # 无论哪个分支，在退出LAUNCH前都尝试使 n < 0.5（无条件稳定条件）
+    # =============================================================
+    elif not launch_exit:
+        launch_capacity_adjusted = False
+        if n_proxy > 0.5 and cur_max_c < 50:
+            target_max_c = int(q_curr / 0.45) + 1
+            target_max_c = max(cur_max_c + 1, min(target_max_c, 50))
+            if target_max_c > cur_max_c:
+                adjustment_made = 'LAUNCH_CAPACITY n=%.2f>0.5 -> max_c:%d->%d' % (n_proxy, cur_max_c, target_max_c)
+                adjust_type_this_run = 'LAUNCH_capacity'
+                cur_max_c = target_max_c
+                launch_capacity_adjusted = True
+                n_proxy = q_curr / cur_max_c
+
+        if not launch_capacity_adjusted and (ewma_state.get("suppressed_cycles", 0) >= 10 or elapsed >= LAUNCH_TIMEOUT_SECS):
+            # 只有在本次未做容量调整时才接受超时退出（钱学森第十二章）
+            sc_before_reset = ewma_state.get("suppressed_cycles", 0)
+            current_mode = "normal"
+            launch_exit = True
+            ewma_state["launch_entry_time"] = None
+            ewma_state["mode"] = "normal"
+            ewma_state["suppressed_cycles"] = 0
+            ewma_state["launch_cooldown_until"] = datetime.now().timestamp() + 60
+            adjustment_made = f"LAUNCH_TIMEOUT sc={sc_before_reset}→0 ({elapsed:.0f}s)"
+            adjust_type_this_run = "LAUNCH_exit"
+            mode_note = "[LAUNCH_EXIT_TIMEOUT]"
     elif q_rate > 0.1:
         # q正在上升：过载在建立，留在launch模式（钱学森第十二章）
         ewma_state["suppressed_cycles"] = ewma_state.get("suppressed_cycles", 0) + 1
