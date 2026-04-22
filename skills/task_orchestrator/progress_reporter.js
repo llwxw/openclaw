@@ -15,7 +15,13 @@ async function spawnWithProgress(cmd, args, timeoutSec, memLimitMB, onProgress) 
  else process.stdout.write(text);
  lastOutput = Date.now();
  });
- const timeout = setTimeout(() => { if (!proc.killed) proc.kill('SIGKILL'); }, timeoutSec * 1000);
+ const timeout = setTimeout(() => {
+  if (proc.killed) return;
+  proc.kill('SIGTERM');  // 优雅终止
+  setTimeout(() => {
+    if (!proc.killed) proc.kill('SIGKILL');  // 5秒后强制
+  }, 5000);
+}, timeoutSec * 1000);
  const code = await new Promise(resolve => proc.on('close', resolve));
  clearInterval(interval); clearTimeout(timeout);
  if (code !== 0) throw new Error(`Exit ${code}`);

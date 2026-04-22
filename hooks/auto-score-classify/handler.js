@@ -112,13 +112,30 @@ function checkSessionSpawned(sessionKey) {
   return false;
 }
 
+// 敏感信息脱敏
+function sanitize(obj) {
+  if (!obj || typeof obj !== 'object') return obj;
+  const SENSITIVE_KEYS = ['password','token','api_key','apikey','secret','authorization','auth','credentials','private_key'];
+  const result = Array.isArray(obj) ? [] : {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (SENSITIVE_KEYS.some(k => key.toLowerCase().includes(k))) {
+      result[key] = '***';
+    } else if (value && typeof value === 'object') {
+      result[key] = sanitize(value);
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
+
 // 写入 ephemeral，带 _spawned 标记
 function writeEphemeral(sessionKey, text, score, strategy, factors, spawned) {
   try {
     const today = new Date().toISOString().slice(0, 10);
     const hour = String(new Date().getHours()).padStart(2, "0");
     const filePath = path.join(EPHEMERAL_DIR, `${today}-${hour}.jsonl`);
-    const entry = {
+    const entry = sanitize({
       timestamp: new Date().toISOString(),
       sessionKey,
       scene: "task",
@@ -127,7 +144,7 @@ function writeEphemeral(sessionKey, text, score, strategy, factors, spawned) {
       factors,
       _spawned: spawned,
       preview: text.slice(0, 100),
-    };
+    });
     fs.appendFileSync(filePath, JSON.stringify(entry) + "\n", "utf8");
   } catch (err) {
     log(`EPHEMERAL_WRITE_ERROR: ${err.message}`);
