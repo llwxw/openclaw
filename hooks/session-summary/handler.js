@@ -20,7 +20,7 @@ import http from "node:http";
 
 const MEMORY_DIR = path.join(
   process.env.OPENCLAW_WORKSPACE_DIR ||
-    path.join(os.homedir(), ".openclaw", "workspace", "main"),
+    path.join(os.homedir(), ".openclaw", "workspace"),
   "memory"
 );
 const EPHEMERAL_DIR = path.join(MEMORY_DIR, "ephemeral");
