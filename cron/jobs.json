@@ -8,7 +8,7 @@
       "name": "memory-maintain",
       "enabled": true,
       "createdAtMs": 1775278155107,
-      "updatedAtMs": 1776656519590,
+      "updatedAtMs": 1776919265767,
       "schedule": {
         "kind": "cron",
         "expr": "0 3 * * *",
@@ -24,11 +24,11 @@
         "mode": "none"
       },
       "state": {
-        "nextRunAtMs": 1776711600000,
-        "lastRunAtMs": 1776656499072,
+        "nextRunAtMs": 1776970800000,
+        "lastRunAtMs": 1776919249552,
         "lastRunStatus": "ok",
         "lastStatus": "ok",
-        "lastDurationMs": 20518,
+        "lastDurationMs": 16215,
         "lastDeliveryStatus": "not-requested",
         "consecutiveErrors": 0
       }
@@ -40,7 +40,7 @@
       "name": "memory-keeper",
       "enabled": true,
       "createdAtMs": 1775278283916,
-      "updatedAtMs": 1776656527853,
+      "updatedAtMs": 1776919282863,
       "schedule": {
         "expr": "0 4 * * *",
         "tz": "Asia/Shanghai",
@@ -56,11 +56,11 @@
         "mode": "none"
       },
       "state": {
-        "nextRunAtMs": 1776715200000,
-        "lastRunAtMs": 1776656519590,
+        "nextRunAtMs": 1776974400000,
+        "lastRunAtMs": 1776919265767,
         "lastRunStatus": "ok",
         "lastStatus": "ok",
-        "lastDurationMs": 8263,
+        "lastDurationMs": 17096,
         "lastDeliveryStatus": "not-requested",
         "consecutiveErrors": 0
       }
@@ -71,7 +71,7 @@
       "description": "[managed-by=memory-core.short-term-promotion] Promote weighted short-term recalls into MEMORY.md (limit=10, minScore=0.800, minRecallCount=3, minUniqueQueries=3, recencyHalfLifeDays=14, maxAgeDays=30).",
       "enabled": true,
       "createdAtMs": 1775833865688,
-      "updatedAtMs": 1776656537329,
+      "updatedAtMs": 1776919294131,
       "schedule": {
         "kind": "cron",
         "expr": "0 3 * * *"
@@ -83,11 +83,11 @@
         "text": "__openclaw_memory_core_short_term_promotion_dream__"
       },
       "state": {
-        "nextRunAtMs": 1776711600000,
-        "lastRunAtMs": 1776656527853,
+        "nextRunAtMs": 1776970800000,
+        "lastRunAtMs": 1776919282863,
         "lastRunStatus": "ok",
         "lastStatus": "ok",
-        "lastDurationMs": 9476,
+        "lastDurationMs": 11268,
         "lastDeliveryStatus": "not-requested",
         "consecutiveErrors": 0
       }
@@ -99,7 +99,7 @@
       "name": "wiki-learn",
       "enabled": true,
       "createdAtMs": 1776066765541,
-      "updatedAtMs": 1776701031081,
+      "updatedAtMs": 1776938580484,
       "schedule": {
         "kind": "cron",
         "expr": "0 * * * *",
@@ -116,11 +116,11 @@
         "mode": "none"
       },
       "state": {
-        "nextRunAtMs": 1776704559287,
-        "lastRunAtMs": 1776701003956,
+        "nextRunAtMs": 1776942159287,
+        "lastRunAtMs": 1776938559302,
         "lastRunStatus": "ok",
         "lastStatus": "ok",
-        "lastDurationMs": 27125,
+        "lastDurationMs": 21182,
         "lastDeliveryStatus": "not-delivered",
         "consecutiveErrors": 0,
         "lastDelivered": false
@@ -167,7 +167,7 @@
       "name": "context-monitor",
       "enabled": true,
       "createdAtMs": 1776442886186,
-      "updatedAtMs": 1776701053813,
+      "updatedAtMs": 1776940216114,
       "schedule": {
         "kind": "cron",
         "expr": "*/30 * * * *",
@@ -183,15 +183,14 @@
         "mode": "none"
       },
       "state": {
-        "nextRunAtMs": 1776702600000,
-        "lastRunAtMs": 1776701031081,
+        "nextRunAtMs": 1776942000000,
+        "lastRunAtMs": 1776940200006,
         "lastRunStatus": "ok",
         "lastStatus": "ok",
-        "lastDurationMs": 22732,
+        "lastDurationMs": 16108,
         "lastDelivered": false,
         "lastDeliveryStatus": "not-delivered",
-        "consecutiveErrors": 0,
-        "runningAtMs": 1776702818261
+        "consecutiveErrors": 0
       }
     },
     {
@@ -202,7 +201,7 @@
       "description": "循环审查续跑 - 第二轮",
       "enabled": true,
       "createdAtMs": 1776530758540,
-      "updatedAtMs": 1776701506805,
+      "updatedAtMs": 1776939097431,
       "schedule": {
         "kind": "every",
         "everyMs": 1800000,
@@ -219,11 +218,11 @@
         "mode": "none"
       },
       "state": {
-        "nextRunAtMs": 1776703191758,
-        "lastRunAtMs": 1776701391758,
+        "nextRunAtMs": 1776940559013,
+        "lastRunAtMs": 1776938759013,
         "lastRunStatus": "ok",
         "lastStatus": "ok",
-        "lastDurationMs": 115047,
+        "lastDurationMs": 338418,
         "lastDeliveryStatus": "not-delivered",
         "consecutiveErrors": 0,
         "lastDelivered": false
@@ -237,7 +236,7 @@
       "description": "循环审查续跑 - 第三轮",
       "enabled": true,
       "createdAtMs": 1776531282919,
-      "updatedAtMs": 1776701001942,
+      "updatedAtMs": 1776939337607,
       "schedule": {
         "kind": "every",
         "everyMs": 1800000,
@@ -254,15 +253,14 @@
         "mode": "none"
       },
       "state": {
-        "nextRunAtMs": 1776702599900,
-        "lastRunAtMs": 1776700799900,
+        "nextRunAtMs": 1776940924444,
+        "lastRunAtMs": 1776939124444,
         "lastRunStatus": "ok",
         "lastStatus": "ok",
-        "lastDurationMs": 202042,
+        "lastDurationMs": 213163,
         "lastDelivered": false,
         "lastDeliveryStatus": "not-delivered",
-        "consecutiveErrors": 0,
-        "runningAtMs": 1776702818261
+        "consecutiveErrors": 0
       }
     },
     {
@@ -272,7 +270,7 @@
       "name": "SRE_AUTO_RECOVERY_check",
       "enabled": true,
       "createdAtMs": 1776608597852,
-      "updatedAtMs": 1776700172476,
+      "updatedAtMs": 1776939389891,
       "schedule": {
         "kind": "every",
         "everyMs": 1800000,
@@ -285,18 +283,18 @@
         "message": "检查系统状态：\n1. 读取 suppressed_cycles：python3 -c \"import json; d=json.load(open('/home/ai/.openclaw/metrics/ewma_state.json')); print(f'sc={d.get(\\\"suppressed_cycles\\\")}')\"\n2. 如 sc>=10，运行 collect-metrics.py：python3 /home/ai/.openclaw/sre-agent/collect-metrics.py\n3. 检查 AUTO_RECOVERY：grep AUTO_RECOVERY /home/ai/.openclaw/metrics/system_metrics.jsonl | tail -3\n4. 输出完整报告"
       },
       "delivery": {
-        "mode": "announce",
+        "mode": "none",
         "channel": "webchat"
       },
       "state": {
-        "nextRunAtMs": 1776703772476,
-        "lastRunAtMs": 1776700129399,
-        "lastRunStatus": "error",
-        "lastStatus": "error",
-        "lastDurationMs": 43077,
-        "lastDeliveryStatus": "unknown",
-        "consecutiveErrors": 18,
-        "lastError": "Delivering to Feishu requires target <chatId|user:openId|chat:chatId>"
+        "nextRunAtMs": 1776941163694,
+        "lastRunAtMs": 1776939363694,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 26197,
+        "lastDeliveryStatus": "not-delivered",
+        "consecutiveErrors": 0,
+        "lastDelivered": false
       }
     },
     {
@@ -306,7 +304,7 @@
       "name": "SRE_P1_stability_check",
       "enabled": true,
       "createdAtMs": 1776613014692,
-      "updatedAtMs": 1776702815555,
+      "updatedAtMs": 1776939489473,
       "schedule": {
         "kind": "every",
         "everyMs": 1800000,
@@ -319,18 +317,18 @@
         "message": "检查系统 P1 稳定化状态：\n\n1. 读取 system_metrics.jsonl 最新 60 条记录\n2. 计算 n<0.5 的比例\n3. 计算高频颤震次数（q 变化 >2）\n4. 检查 zone 分布\n5. 输出：\n```\n[P1_CHECK] n<0.5: X/60 = XX% (目标>80%)\n[P1_CHECK] 高频颤震: X次 (目标=0)\n[P1_CHECK] zone分布: {...}\n[P1_CHECK] P1_STABLE: YES/NO\n```\n\n如果 P1_STABLE=YES，额外检查：\n- AUTO_RECOVERY suppressed_cycles 当前值\n- LAUNCH 是否已退出\n\n如果 P1_STABLE=YES，报告 \"P1_COMPLETE\" 并等待下一步指令。"
       },
       "delivery": {
-        "mode": "announce",
+        "mode": "none",
         "channel": "webchat"
       },
       "state": {
-        "nextRunAtMs": 1776706415555,
-        "lastRunAtMs": 1776702597316,
-        "lastRunStatus": "error",
-        "lastStatus": "error",
-        "lastDurationMs": 218239,
-        "lastDeliveryStatus": "unknown",
-        "consecutiveErrors": 17,
-        "lastError": "Delivering to Feishu requires target <chatId|user:openId|chat:chatId>"
+        "nextRunAtMs": 1776941191901,
+        "lastRunAtMs": 1776939391901,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 97572,
+        "lastDeliveryStatus": "not-delivered",
+        "consecutiveErrors": 0,
+        "lastDelivered": false
       }
     },
     {
@@ -340,7 +338,7 @@
       "name": "P1_P2_24h_stability_check",
       "enabled": true,
       "createdAtMs": 1776615067991,
-      "updatedAtMs": 1776701571325,
+      "updatedAtMs": 1776940092671,
       "schedule": {
         "kind": "every",
         "everyMs": 86400000,
@@ -353,17 +351,17 @@
         "message": "24小时P1+P2稳定性检查：\n\n1. 读取system_metrics.jsonl最新60条记录\n2. 计算n<0.5占比（目标>80%）\n3. 计算高频颤震次数（目标=0）\n4. 检查fuse状态\n5. 检查AUTO_RECOVERY suppressed_cycles\n6. 输出报告：\n```\n[P24h_CHECK]\n n<0.5: XX/60=XX% (目标>80%)\n 颤震: X次 (目标=0)\n fuse: ON/OFF\n suppressed_cycles: X\n P1_STABLE: YES/NO\n P2_AUTO_RECOVERY_TRIGGERED: YES/NO\n```\n\n如果P1_STABLE=YES且P2_TRIGGERED=YES，输出\"P1_P2_COMPLETE\""
       },
       "delivery": {
-        "mode": "announce"
+        "mode": "none"
       },
       "state": {
-        "nextRunAtMs": 1776787908817,
-        "lastRunAtMs": 1776701508817,
-        "lastRunStatus": "error",
-        "lastStatus": "error",
-        "lastDurationMs": 62508,
-        "lastError": "Delivering to Feishu requires target <chatId|user:openId|chat:chatId>",
-        "lastDeliveryStatus": "unknown",
-        "consecutiveErrors": 1
+        "nextRunAtMs": 1777026451342,
+        "lastRunAtMs": 1776940051342,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 41329,
+        "lastDeliveryStatus": "not-delivered",
+        "consecutiveErrors": 0,
+        "lastDelivered": false
       }
     },
     {
@@ -374,7 +372,7 @@
       "description": "SRE系统每5分钟自动采集指标并告警异常",
       "enabled": true,
       "createdAtMs": 1776667823914,
-      "updatedAtMs": 1776699530178,
+      "updatedAtMs": 1776940271707,
       "schedule": {
         "kind": "cron",
         "expr": "*/5 * * * *",
@@ -388,18 +386,19 @@
         "timeoutSeconds": 60
       },
       "delivery": {
-        "mode": "announce",
+        "mode": "none",
         "channel": "webchat"
       },
       "state": {
-        "nextRunAtMs": 1776703130178,
-        "lastRunAtMs": 1776699506747,
+        "nextRunAtMs": 1776940500000,
+        "lastRunAtMs": 1776940216114,
         "lastRunStatus": "error",
         "lastStatus": "error",
-        "lastDurationMs": 23431,
-        "lastDeliveryStatus": "unknown",
-        "consecutiveErrors": 13,
-        "lastError": "Delivering to Feishu requires target <chatId|user:openId|chat:chatId>"
+        "lastDurationMs": 55593,
+        "lastDeliveryStatus": "not-requested",
+        "consecutiveErrors": 1,
+        "lastError": "cron: job execution timed out",
+        "lastErrorReason": "timeout"
       }
     },
     {
@@ -428,13 +427,13 @@
       },
       "state": {
         "lastRunAtMs": 1776696300006,
-        "lastRunStatus": "error",
+        "lastRunStatus": "ok",
         "lastStatus": "error",
         "lastDurationMs": 57158,
-        "lastError": "cron: job execution timed out",
+        "lastError": "",
         "lastErrorReason": "timeout",
         "lastDeliveryStatus": "unknown",
-        "consecutiveErrors": 1
+        "consecutiveErrors": 0
       }
     }
   ]

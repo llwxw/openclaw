@@ -1,12 +1,12 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.4.15",
-    "lastTouchedAt": "2026-04-20T03:34:52.331Z"
+    "lastTouchedAt": "2026-04-22T10:35:33.643Z"
   },
   "wizard": {
-    "lastRunAt": "2026-04-18T04:23:59.547Z",
+    "lastRunAt": "2026-04-22T10:35:33.457Z",
     "lastRunVersion": "2026.4.15",
-    "lastRunCommand": "doctor",
+    "lastRunCommand": "configure",
     "lastRunMode": "local"
   },
   "logging": {
@@ -25,6 +25,10 @@
       "minimax:cn": {
         "provider": "minimax",
         "mode": "api_key"
+      },
+      "minimax-portal:default": {
+        "provider": "minimax-portal",
+        "mode": "oauth"
       }
     }
   },
@@ -142,30 +146,29 @@
             "maxTokens": 8192
           }
         ]
+      },
+      "minimax-portal": {
+        "baseUrl": "https://api.minimaxi.com/anthropic",
+        "api": "anthropic-messages",
+        "authHeader": true,
+        "models": []
       }
     }
   },
   "agents": {
     "defaults": {
       "model": {
-        "primary": "minimax/MiniMax-M2.7"
+        "primary": "minimax-portal/MiniMax-M2.7",
+        "fallbacks": [
+          "minimax-portal/MiniMax-M2.7-highspeed"
+        ]
       },
       "models": {
-        "deepseek/deepseek-chat": {
-          "alias": "cloud"
+        "minimax-portal/MiniMax-M2.7": {
+          "alias": "minimax-m2.7"
         },
-        "deepseek/deepseek-reasoner": {},
-        "ollama/qwen2.5:14b": {
-          "alias": "local"
-        },
-        "codingplan/minimax-m2.5": {
-          "alias": "coding"
-        },
-        "minimax/MiniMax-M2.7": {
-          "alias": "Minimax"
-        },
-        "stepfun/step-3.5-flash-2603": {
-          "alias": "StepFun"
+        "minimax-portal/MiniMax-M2.7-highspeed": {
+          "alias": "minimax-m2.7-highspeed"
         }
       },
       "workspace": "/home/ai/.openclaw/workspace",
@@ -217,6 +220,9 @@
           "enabled": true
         },
         "session-summary": {
+          "enabled": true
+        },
+        "memory-recall": {
           "enabled": true
         }
       }

@@ -39,6 +39,7 @@ class OutputTruncation {
    * @returns {Object} 输出处理器
    */
   createHandler(taskId) {
+    const self = this;
     const maxBytes = this.maxSizeKB * 1024;
     let buffer = '';
     let totalBytes = 0;
@@ -87,7 +88,7 @@ class OutputTruncation {
           
           // 创建临时文件
           const filename = `task_${taskId}_${Date.now()}.out`;
-          tempFilePath = path.join(this.outputDir, filename);
+          tempFilePath = path.join(self.outputDir, filename);
           
           try {
             tempFile = fs.createWriteStream(tempFilePath, { flags: 'w', encoding: 'utf8' });

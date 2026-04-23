@@ -1,0 +1,112 @@
+{
+  "wizard": {
+    "lastRunAt": "2026-04-22T05:17:22.784Z",
+    "lastRunVersion": "2026.4.15",
+    "lastRunCommand": "configure",
+    "lastRunMode": "local"
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "custom-api-deepseek-com": {
+        "baseUrl": "https://api.deepseek.com/v1",
+        "apiKey": "sk-8e6102d12a394cd1822ee2503d54c137",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "deepseek-chat",
+            "name": "deepseek-chat (Custom Provider)",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 16000,
+            "maxTokens": 4096
+          }
+        ]
+      },
+      "minimax-portal": {
+        "baseUrl": "https://api.minimaxi.com/anthropic",
+        "api": "anthropic-messages",
+        "authHeader": true,
+        "models": []
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "minimax-portal/MiniMax-M2.7",
+        "fallbacks": [
+          "minimax-portal/MiniMax-M2.7-highspeed"
+        ]
+      },
+      "models": {
+        "minimax-portal/MiniMax-M2.7": {
+          "alias": "minimax-m2.7"
+        },
+        "minimax-portal/MiniMax-M2.7-highspeed": {
+          "alias": "minimax-m2.7-highspeed"
+        }
+      },
+      "workspace": "/home/ai/.openclaw/workspace"
+    }
+  },
+  "tools": {
+    "profile": "coding"
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
+  "session": {
+    "dmScope": "per-channel-peer"
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "loopback",
+    "controlUi": {
+      "allowInsecureAuth": true
+    },
+    "auth": {
+      "mode": "token",
+      "token": "5e7ab299281fb2ffbdbb922f9939d9abbe5e15321f6cb901"
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    },
+    "nodes": {
+      "denyCommands": [
+        "camera.snap",
+        "camera.clip",
+        "screen.record",
+        "contacts.add",
+        "calendar.add",
+        "reminders.add",
+        "sms.send"
+      ]
+    }
+  },
+  "meta": {
+    "lastTouchedVersion": "2026.4.15",
+    "lastTouchedAt": "2026-04-22T05:17:22.809Z"
+  },
+  "auth": {
+    "profiles": {
+      "minimax-portal:default": {
+        "provider": "minimax-portal",
+        "mode": "oauth"
+      }
+    }
+  }
+}

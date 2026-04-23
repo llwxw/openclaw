@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-04-22T04:48:26.710Z",
+  "classification": {
+    "scene": "clarify",
+    "confidence": 0.333620548248291
+  },
+  "scoring": {
+    "score": 67,
+    "recommendedStrategy": "SPAWN_SUBAGENT",
+    "factors": {
+      "logic": 2,
+      "risk": 2,
+      "duration": 1,
+      "resource": 0,
+      "uncertainty": 3,
+      "dependency": 0
+    }
+  },
+  "preview": "An async command you ran earlier has completed. The result is shown in the system messages above. Ha"
+}

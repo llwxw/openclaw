@@ -4,7 +4,9 @@
     "deepseek": "deepseek:default",
     "ollama": "ollama:default",
     "openai": "openai:default",
-    "minimax": "minimax:cn"
+    "minimax": "minimax:cn",
+    "stepfun": "stepfun:cn",
+    "minimax-portal": "minimax-portal:default"
   },
   "usageStats": {
     "ollama:default": {
@@ -28,8 +30,25 @@
     },
     "minimax:cn": {
       "errorCount": 0,
-      "lastUsed": 1776702873064,
-      "lastFailureAt": 1776427659896
+      "lastUsed": 1776853974101,
+      "lastFailureAt": 1776853973944
+    },
+    "stepfun:default": {
+      "errorCount": 1,
+      "failureCounts": {
+        "auth": 1
+      },
+      "lastFailureAt": 1776853753853,
+      "cooldownUntil": 1776853783853,
+      "cooldownReason": "auth"
+    },
+    "stepfun:cn": {
+      "errorCount": 0,
+      "lastUsed": 1776853809220
+    },
+    "minimax-portal:default": {
+      "errorCount": 0,
+      "lastUsed": 1776940215472
     }
   }
 }

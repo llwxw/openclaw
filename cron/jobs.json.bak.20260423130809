@@ -1,0 +1,439 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "id": "6b061d51-e257-45be-9bc1-15a529722270",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "memory-maintain",
+      "enabled": true,
+      "createdAtMs": 1775278155107,
+      "updatedAtMs": 1776919265767,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 3 * * *",
+        "tz": "Asia/Shanghai"
+      },
+      "sessionTarget": "main",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "systemEvent",
+        "text": "✅ 每日记忆维护已完成"
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "state": {
+        "nextRunAtMs": 1776970800000,
+        "lastRunAtMs": 1776919249552,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 16215,
+        "lastDeliveryStatus": "not-requested",
+        "consecutiveErrors": 0
+      }
+    },
+    {
+      "id": "e3ff05f4-6d75-4c58-8f4c-d4de23b82ab1",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "memory-keeper",
+      "enabled": true,
+      "createdAtMs": 1775278283916,
+      "updatedAtMs": 1776919282863,
+      "schedule": {
+        "expr": "0 4 * * *",
+        "tz": "Asia/Shanghai",
+        "kind": "cron"
+      },
+      "sessionTarget": "main",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "systemEvent",
+        "text": "Memory Keeper 整理任务已执行"
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "state": {
+        "nextRunAtMs": 1776974400000,
+        "lastRunAtMs": 1776919265767,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 17096,
+        "lastDeliveryStatus": "not-requested",
+        "consecutiveErrors": 0
+      }
+    },
+    {
+      "id": "63a6537d-619d-4b32-b185-e1d3f3bdd93a",
+      "name": "Memory Dreaming Promotion",
+      "description": "[managed-by=memory-core.short-term-promotion] Promote weighted short-term recalls into MEMORY.md (limit=10, minScore=0.800, minRecallCount=3, minUniqueQueries=3, recencyHalfLifeDays=14, maxAgeDays=30).",
+      "enabled": true,
+      "createdAtMs": 1775833865688,
+      "updatedAtMs": 1776919294131,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 3 * * *"
+      },
+      "sessionTarget": "main",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "systemEvent",
+        "text": "__openclaw_memory_core_short_term_promotion_dream__"
+      },
+      "state": {
+        "nextRunAtMs": 1776970800000,
+        "lastRunAtMs": 1776919282863,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 11268,
+        "lastDeliveryStatus": "not-requested",
+        "consecutiveErrors": 0
+      }
+    },
+    {
+      "id": "b3c6834e-c671-4b21-b6d4-0dc9c86f0e84",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "wiki-learn",
+      "enabled": true,
+      "createdAtMs": 1776066765541,
+      "updatedAtMs": 1776920578242,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 * * * *",
+        "tz": "Asia/Shanghai",
+        "staggerMs": 300000
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "执行 ~/.openclaw/workspace/scripts/wiki-learn-once.sh 并将输出追加到 ~/.openclaw/workspace/memory/log.md"
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "state": {
+        "nextRunAtMs": 1776924159287,
+        "lastRunAtMs": 1776920559296,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 18946,
+        "lastDeliveryStatus": "not-delivered",
+        "consecutiveErrors": 0,
+        "lastDelivered": false
+      }
+    },
+    {
+      "id": "71f1b730-a7e3-492a-9f3d-0bafe590a517",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "summary-pruner",
+      "description": "每周日凌晨 4:00 清理 30 天前的 session-summary 文件（独立于 session-summary hook，作为备份保障）",
+      "enabled": true,
+      "createdAtMs": 1776170972604,
+      "updatedAtMs": 1776542574211,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 4 * * 0",
+        "tz": "Asia/Shanghai"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "执行以下命令并报告输出：\n```\nnode /home/ai/.openclaw/scripts/prune-old-summaries.js\n```\n不要做任何其他事情，只执行命令并返回输出结果。"
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "state": {
+        "nextRunAtMs": 1777147200000,
+        "lastRunAtMs": 1776542409721,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 164490,
+        "lastDelivered": false,
+        "lastDeliveryStatus": "not-delivered",
+        "consecutiveErrors": 0
+      }
+    },
+    {
+      "id": "8f74a423-555b-468d-aac3-f8822b65bbcb",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "context-monitor",
+      "enabled": true,
+      "createdAtMs": 1776442886186,
+      "updatedAtMs": 1776920414835,
+      "schedule": {
+        "kind": "cron",
+        "expr": "*/30 * * * *",
+        "tz": "Asia/Shanghai"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "执行以下命令并返回输出结果（不需要解释）：\n```bash\nnode /home/ai/.openclaw/scripts/context-monitor.js >> /home/ai/.openclaw/workspace/memory/log.md 2>&1\n```\n只执行命令，不要做其他的。"
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "state": {
+        "nextRunAtMs": 1776922200000,
+        "lastRunAtMs": 1776920400005,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 14830,
+        "lastDelivered": false,
+        "lastDeliveryStatus": "not-delivered",
+        "consecutiveErrors": 0
+      }
+    },
+    {
+      "id": "8e8a0b81-2575-4d1d-baee-643054cce6bc",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "继续循环系统审查。第二轮：",
+      "description": "循环审查续跑 - 第二轮",
+      "enabled": true,
+      "createdAtMs": 1776530758540,
+      "updatedAtMs": 1776920741033,
+      "schedule": {
+        "kind": "every",
+        "everyMs": 1800000,
+        "anchorMs": 1776530758540
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "继续循环系统审查。第二轮：\n1. 读取 memory/loop-reviews/2026-04-19-0039.md 了解第一轮发现\n2. 继续审查剩余项目：entity 清理、context-hook ESM 问题、cron 任务配置\n3. 修复第一轮发现的 Bug（auto-router spawnViaApi 未定义、self-improvement 空文件）\n4. 更新 memory/loop-reviews/2026-04-19-0039.md\n5. 设置下一轮 cron（如果还需要继续）\n\n日志路径：memory/loop-reviews/2026-04-19-0039.md",
+        "timeoutSeconds": 600
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "state": {
+        "nextRunAtMs": 1776922429785,
+        "lastRunAtMs": 1776920629785,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 111248,
+        "lastDeliveryStatus": "not-delivered",
+        "consecutiveErrors": 0,
+        "lastDelivered": false
+      }
+    },
+    {
+      "id": "5d2fbf4e-d151-4649-b7d0-e9679b24fad1",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "第三轮循环审查：",
+      "description": "循环审查续跑 - 第三轮",
+      "enabled": true,
+      "createdAtMs": 1776531282919,
+      "updatedAtMs": 1776920844114,
+      "schedule": {
+        "kind": "every",
+        "everyMs": 1800000,
+        "anchorMs": 1776531282919
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "第三轮循环审查：\n1. 读取 memory/loop-reviews/2026-04-19-0039.md 了解前两轮发现\n2. 验证 auto-score-classify hook 是否恢复（检查 ephemeral 是否有新写入）\n3. 确认 entity count 稳定在 28\n4. 扫描是否有新问题\n5. 更新 memory/loop-reviews/2026-04-19-0039.md\n6. 如果系统稳定，标记为完成并报告\n\n日志路径: memory/loop-reviews/2026-04-19-0039.md",
+        "timeoutSeconds": 600
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "state": {
+        "nextRunAtMs": 1776922562001,
+        "lastRunAtMs": 1776920762001,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 82113,
+        "lastDelivered": false,
+        "lastDeliveryStatus": "not-delivered",
+        "consecutiveErrors": 0
+      }
+    },
+    {
+      "id": "ea410edc-d634-4df1-b093-7200abae730e",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "SRE_AUTO_RECOVERY_check",
+      "enabled": true,
+      "createdAtMs": 1776608597852,
+      "updatedAtMs": 1776919141503,
+      "schedule": {
+        "kind": "every",
+        "everyMs": 1800000,
+        "anchorMs": 1776608597852
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "检查系统状态：\n1. 读取 suppressed_cycles：python3 -c \"import json; d=json.load(open('/home/ai/.openclaw/metrics/ewma_state.json')); print(f'sc={d.get(\\\"suppressed_cycles\\\")}')\"\n2. 如 sc>=10，运行 collect-metrics.py：python3 /home/ai/.openclaw/sre-agent/collect-metrics.py\n3. 检查 AUTO_RECOVERY：grep AUTO_RECOVERY /home/ai/.openclaw/metrics/system_metrics.jsonl | tail -3\n4. 输出完整报告"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat"
+      },
+      "state": {
+        "nextRunAtMs": 1776922741503,
+        "lastRunAtMs": 1776919089395,
+        "lastRunStatus": "error",
+        "lastStatus": "error",
+        "lastDurationMs": 52108,
+        "lastDeliveryStatus": "unknown",
+        "consecutiveErrors": 27,
+        "lastError": "Delivering to Feishu requires target <chatId|user:openId|chat:chatId>"
+      }
+    },
+    {
+      "id": "72a82ad9-79c1-4419-ae8c-ed2fd5f86e53",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "SRE_P1_stability_check",
+      "enabled": true,
+      "createdAtMs": 1776613014692,
+      "updatedAtMs": 1776919247154,
+      "schedule": {
+        "kind": "every",
+        "everyMs": 1800000,
+        "anchorMs": 1776613014692
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "检查系统 P1 稳定化状态：\n\n1. 读取 system_metrics.jsonl 最新 60 条记录\n2. 计算 n<0.5 的比例\n3. 计算高频颤震次数（q 变化 >2）\n4. 检查 zone 分布\n5. 输出：\n```\n[P1_CHECK] n<0.5: X/60 = XX% (目标>80%)\n[P1_CHECK] 高频颤震: X次 (目标=0)\n[P1_CHECK] zone分布: {...}\n[P1_CHECK] P1_STABLE: YES/NO\n```\n\n如果 P1_STABLE=YES，额外检查：\n- AUTO_RECOVERY suppressed_cycles 当前值\n- LAUNCH 是否已退出\n\n如果 P1_STABLE=YES，报告 \"P1_COMPLETE\" 并等待下一步指令。"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat"
+      },
+      "state": {
+        "nextRunAtMs": 1776922847154,
+        "lastRunAtMs": 1776919177582,
+        "lastRunStatus": "error",
+        "lastStatus": "error",
+        "lastDurationMs": 69572,
+        "lastDeliveryStatus": "unknown",
+        "consecutiveErrors": 26,
+        "lastError": "Delivering to Feishu requires target <chatId|user:openId|chat:chatId>"
+      }
+    },
+    {
+      "id": "3605d25d-f2cf-4cac-8ec5-4e1b0425fe10",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "P1_P2_24h_stability_check",
+      "enabled": true,
+      "createdAtMs": 1776615067991,
+      "updatedAtMs": 1776853657574,
+      "schedule": {
+        "kind": "every",
+        "everyMs": 86400000,
+        "anchorMs": 1776615067991
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "24小时P1+P2稳定性检查：\n\n1. 读取system_metrics.jsonl最新60条记录\n2. 计算n<0.5占比（目标>80%）\n3. 计算高频颤震次数（目标=0）\n4. 检查fuse状态\n5. 检查AUTO_RECOVERY suppressed_cycles\n6. 输出报告：\n```\n[P24h_CHECK]\n n<0.5: XX/60=XX% (目标>80%)\n 颤震: X次 (目标=0)\n fuse: ON/OFF\n suppressed_cycles: X\n P1_STABLE: YES/NO\n P2_AUTO_RECOVERY_TRIGGERED: YES/NO\n```\n\n如果P1_STABLE=YES且P2_TRIGGERED=YES，输出\"P1_P2_COMPLETE\""
+      },
+      "delivery": {
+        "mode": "announce"
+      },
+      "state": {
+        "nextRunAtMs": 1776940051336,
+        "lastRunAtMs": 1776853651336,
+        "lastRunStatus": "error",
+        "lastStatus": "error",
+        "lastDurationMs": 6238,
+        "lastDeliveryStatus": "unknown",
+        "consecutiveErrors": 2,
+        "lastError": "Delivering to Feishu requires target <chatId|user:openId|chat:chatId>"
+      }
+    },
+    {
+      "id": "9adf1509-3d07-4645-86d2-b99661397464",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "SRE_collect_5min",
+      "description": "SRE系统每5分钟自动采集指标并告警异常",
+      "enabled": true,
+      "createdAtMs": 1776667823914,
+      "updatedAtMs": 1776919172403,
+      "schedule": {
+        "kind": "cron",
+        "expr": "*/5 * * * *",
+        "tz": "Asia/Shanghai"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "运行 SRE 指标采集并输出结果摘要：\n\npython3 /home/ai/.openclaw/sre-agent/collect-metrics.py 2>&1\n\necho \"---\"\necho \"[SRE collect] done\"\n\necho \"[SRE] ewma_state:\"\npython3 -c \"import json; d=json.load(open('/home/ai/.openclaw/metrics/ewma_state.json')); print('mode:', d.get('mode'), 'suppressed:', d.get('suppressed_cycles', 0), 'last_adj:', d.get('last_adjusted_zone'))\"",
+        "timeoutSeconds": 60
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "webchat"
+      },
+      "state": {
+        "nextRunAtMs": 1776922772403,
+        "lastRunAtMs": 1776919141503,
+        "lastRunStatus": "error",
+        "lastStatus": "error",
+        "lastDurationMs": 30900,
+        "lastDeliveryStatus": "unknown",
+        "consecutiveErrors": 22,
+        "lastError": "Delivering to Feishu requires target <chatId|user:openId|chat:chatId>"
+      }
+    },
+    {
+      "id": "8a5540ee-656c-4b4e-97ea-7f1f3ccd540b",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "验证 session-summary hook 修复状态。执行以下验证：",
+      "description": "验证 session-summary hook 修复",
+      "enabled": false,
+      "deleteAfterRun": true,
+      "createdAtMs": 1776695975132,
+      "updatedAtMs": 1776696357164,
+      "schedule": {
+        "kind": "at",
+        "at": "2026-04-20T14:45:00.000Z"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "验证 session-summary hook 修复状态。执行以下验证：\n\n1. 读取 /home/ai/.openclaw/hooks/session-summary/handler.js，确认 generateSummaryWithEntities 函数不再调用外部 API（不应包含 zhenze-huhehaote 字符串）\n2. 检查 /home/ai/.openclaw/workspace/memory/ 目录下是否有新的 session-summary 文件（文件名格式：2026-04-20-session-summary-*.md），列出所有文件\n3. 报告验证结果",
+        "timeoutSeconds": 60
+      },
+      "delivery": {
+        "mode": "announce"
+      },
+      "state": {
+        "lastRunAtMs": 1776696300006,
+        "lastRunStatus": "error",
+        "lastStatus": "error",
+        "lastDurationMs": 57158,
+        "lastError": "cron: job execution timed out",
+        "lastErrorReason": "timeout",
+        "lastDeliveryStatus": "unknown",
+        "consecutiveErrors": 1
+      }
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.4.15",
-    "lastTouchedAt": "2026-04-18T15:36:25.526Z"
+    "lastTouchedAt": "2026-04-20T03:34:52.331Z"
   },
   "wizard": {
     "lastRunAt": "2026-04-18T04:23:59.547Z",
@@ -210,19 +210,13 @@
     "internal": {
       "enabled": true,
       "entries": {
-        "session-memory": {
-          "enabled": true
-        },
-        "command-logger": {
-          "enabled": true
-        },
         "self-improvement": {
           "enabled": true
         },
-        "context_hook": {
+        "auto-score-classify": {
           "enabled": true
         },
-        "auto-score-classify": {
+        "session-summary": {
           "enabled": true
         }
       }
@@ -281,7 +275,8 @@
       "deepseek",
       "ollama",
       "active-memory",
-      "lobster"
+      "lobster",
+      "stepfun"
     ],
     "slots": {
       "memory": "memory-lancedb"
@@ -320,6 +315,9 @@
         "enabled": true
       },
       "lobster": {
+        "enabled": true
+      },
+      "stepfun": {
         "enabled": true
       }
     }

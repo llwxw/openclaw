@@ -1,0 +1,27 @@
+{
+  "providers": {
+    "stepfun": {
+      "baseUrl": "https://api.stepfun.com/step_plan/v1",
+      "api": "openai-completions",
+      "models": [
+        {
+          "id": "step-3.5-flash-2603",
+          "name": "Step-3.5-Flash-2603",
+          "reasoning": false,
+          "input": [
+            "text"
+          ],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "contextWindow": 327680,
+          "maxTokens": 8192
+        }
+      ],
+      "apiKey": "3N4n0WKIa2B1lDkMXfDMaHQqTfZ1UA9KGIeh7fueVuC0HhHQazF4daUePgKemwWrH"
+    }
+  }
+}
